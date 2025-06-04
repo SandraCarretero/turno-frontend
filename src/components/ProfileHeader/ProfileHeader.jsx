@@ -1,8 +1,10 @@
-import { useRef } from 'react';
-import { Edit, Camera, Plus } from 'lucide-react';
-import { userAPI } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+"use client"
+
+import { useRef, useState } from "react"
+import { Camera, Loader2 } from "lucide-react"
+import { userAPI } from "../../services/api"
+import { useAuth } from "../../context/AuthContext"
+import toast from "react-hot-toast"
 import {
   HeaderContainer,
   AvatarSection,
@@ -15,76 +17,120 @@ import {
   StatItem,
   StatValue,
   StatLabel,
-  Actions,
-  ActionButton
-} from './ProfileHeader.styles';
-import UserAvatar from '../UserAvatar/UserAvatar';
+} from "./ProfileHeader.styles"
+import UserAvatar from "../UserAvatar/UserAvatar"
 
 const ProfileHeader = ({ user, onEditProfile, matches }) => {
-  const fileInputRef = useRef(null);
-  const { updateUser, logout } = useAuth();
+  const fileInputRef = useRef(null)
+  const { updateUser, logout } = useAuth()
+  const [isUploading, setIsUploading] = useState(false)
 
   const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
+    if (isUploading) return
+    fileInputRef.current?.click()
+  }
 
-  const handleAvatarChange = async event => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
 
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!validTypes.includes(file.type)) {
-      toast.error('Solo se permiten imágenes JPEG, PNG o GIF');
-      return;
+    console.log("Archivo seleccionado:", {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    })
+
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+    if (!validTypes.includes(file.type.toLowerCase())) {
+      toast.error("Solo se permiten imágenes JPEG, PNG, GIF o WebP")
+      return
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('La imagen no debe exceder los 5MB');
-      return;
+      toast.error("La imagen no debe exceder los 5MB")
+      return
     }
 
-    const formData = new FormData();
-    formData.append('avatar', file);
+    const formData = new FormData()
+    formData.append("avatar", file)
+
+    console.log("FormData creado:", formData.get("avatar"))
+
+    setIsUploading(true)
 
     try {
-      const response = await userAPI.uploadAvatar(formData);
+      console.log("Iniciando subida de avatar...")
 
-      if (response.data.success) {
-        updateUser({ avatar: response.data.avatar });
-        toast.success(
-          response.data.message || 'Avatar actualizado correctamente'
-        );
+      const response = await userAPI.uploadAvatar(formData)
+
+      console.log("Respuesta del servidor:", response)
+
+      if (response.data && response.data.success) {
+        updateUser({
+          ...user,
+          avatar: response.data.avatar || response.data.data?.url,
+        })
+
+        toast.success(response.data.message || "Avatar actualizado correctamente")
       } else {
-        toast.error(response.data.message || 'Error al actualizar el avatar');
+        throw new Error(response.data?.message || "Error desconocido")
       }
     } catch (error) {
-      console.error('Error al subir avatar:', error);
+      console.error("Error completo al subir avatar:", error)
 
-      let errorMessage = 'Error al subir el avatar';
+      let errorMessage = "Error al subir el avatar"
+
       if (error.response) {
-        errorMessage = error.response.data.message || errorMessage;
+        console.error("Error response:", error.response)
+
+        switch (error.response.status) {
+          case 400:
+            errorMessage = error.response.data?.message || "Solicitud inválida"
+            break
+          case 401:
+            errorMessage = "Sesión expirada. Por favor, inicia sesión nuevamente"
+            break
+          case 413:
+            errorMessage = "El archivo es demasiado grande"
+            break
+          case 500:
+            errorMessage = "Error del servidor. Intenta nuevamente"
+            break
+          default:
+            errorMessage = error.response.data?.message || `Error ${error.response.status}`
+        }
+      } else if (error.request) {
+        console.error("Error request:", error.request)
+        errorMessage = "No se pudo conectar con el servidor"
+      } else {
+        console.error("Error message:", error.message)
+        errorMessage = error.message
       }
 
-      toast.error(errorMessage);
+      toast.error(errorMessage)
     } finally {
-      event.target.value = '';
+      setIsUploading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
     }
-  };
+  }
 
   return (
     <HeaderContainer>
       <AvatarSection>
-        <AvatarContainer onClick={handleAvatarClick}>
-          <UserAvatar user={user} size='big'/>
+        <AvatarContainer onClick={handleAvatarClick} disabled={isUploading}>
+          <UserAvatar user={user} size="big" />
 
-          <AvatarOverlay>
-            <Camera size={20} />
+          <AvatarOverlay isUploading={isUploading}>
+            {isUploading ? <Loader2 size={20} className="animate-spin" /> : <Camera size={20} />}
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
               onChange={handleAvatarChange}
-              style={{ display: 'none' }}
+              disabled={isUploading}
+              style={{ display: "none" }}
             />
           </AvatarOverlay>
         </AvatarContainer>
@@ -101,9 +147,7 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
           <StatLabel>Games</StatLabel>
         </StatItem>
         <StatItem>
-          <StatValue>
-            {user?.friends?.filter(f => f.status === 'accepted').length || 0}
-          </StatValue>
+          <StatValue>{user?.friends?.filter((f) => f.status === "accepted").length || 0}</StatValue>
           <StatLabel>Friends</StatLabel>
         </StatItem>
         <StatItem>
@@ -111,25 +155,6 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
           <StatLabel>Matches</StatLabel>
         </StatItem>
       </Stats>
-
-      <Actions>
-        <ActionButton onClick={onEditProfile}>
-          <Edit size={20} />
-          Edit Profile
-        </ActionButton>
-        <ActionButton
-          onClick={() => logout()}
-          style={{
-            border: '1px solid red',
-            background: 'transparent',
-            color: 'red'
-          }}
-        >
-          Log Out
-        </ActionButton>
-      </Actions>
     </HeaderContainer>
-  );
-};
-
-export default ProfileHeader;
+  )
+}
