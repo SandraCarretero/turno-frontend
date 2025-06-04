@@ -41,10 +41,12 @@ export const authAPI = {
 
 export const userAPI = {
   updateProfile: data => api.put('/users/profile', data),
-  uploadAvatar: formData =>
-    api.post('/users/avatar', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    }),
+  uploadAvatar: (formData) => {
+    console.log("Enviando FormData:", formData)
+    return api.post("/users/avatar", formData, {
+      timeout: 30000,
+    })
+  },
   deleteUser: () => api.delete('/users/profile'),
   searchUsers: query => api.get(`/users/search?q=${query}`),
   sendFriendRequest: userId => api.post(`/users/friends/${userId}`),
