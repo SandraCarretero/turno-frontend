@@ -1,5 +1,3 @@
-"use client"
-
 import { useRef, useState } from "react"
 import { Camera, Loader2 } from "lucide-react"
 import { userAPI } from "../../services/api"
@@ -158,3 +156,5 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
     </HeaderContainer>
   )
 }
+
+export default ProfileHeader;
