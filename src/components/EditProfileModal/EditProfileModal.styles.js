@@ -113,17 +113,17 @@ export const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.2s;
   background: ${props => {
-    if (props.variant === 'secondary') return '#6c757d'; // gris
-    if (props.variant === 'danger') return '#dc3545'; // rojo bootstrap
-    return '#007bff'; // azul por defecto
+    if (props.variant === 'secondary') return '#6c757d'; 
+    if (props.variant === 'danger') return '#dc3545';
+    return '#007bff';
   }};
   color: white;
 
   &:hover:not(:disabled) {
     background: ${props => {
-      if (props.variant === 'secondary') return '#545b62'; // gris
-      if (props.variant === 'danger') return '#af0c1b'; // rojo bootstrap
-      return '#0056b3'; // azul por defecto
+      if (props.variant === 'secondary') return '#545b62'; 
+      if (props.variant === 'danger') return '#af0c1b'; 
+      return '#0056b3';
     }};
   }
 

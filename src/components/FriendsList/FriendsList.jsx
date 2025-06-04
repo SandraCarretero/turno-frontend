@@ -18,7 +18,7 @@ const FriendsList = ({ friends }) => {
     <FriendsContainer>
       <ul>
         {friends
-          .filter(friend => friend.status === 'accepted') // solo mostrar amigos aceptados
+          .filter(friend => friend.status === 'accepted') 
           .map(friend => (
             <Friends key={friend._id}>
               <UserAvatar user={friend.user} />

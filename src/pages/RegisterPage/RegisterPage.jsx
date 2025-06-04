@@ -42,12 +42,10 @@ const RegisterPage = () => {
       navigate('/');
     } catch (error) {
       console.log('Error response:', error.response?.data);
-      // Manejar diferentes formatos de error
       if (
         error.response?.data?.errors &&
         Array.isArray(error.response.data.errors)
       ) {
-        // Formato de array de errores
         const formatted = {};
         error.response.data.errors.forEach(err => {
           const fieldName = err.param || err.path;
@@ -58,16 +56,13 @@ const RegisterPage = () => {
         error.response?.data?.message &&
         error.response.data.message.includes('usuario ya en uso')
       ) {
-        // Error específico de nombre de usuario ya registrado
         setServerErrors({ username: 'Nombre de usuario ya en uso' });
       } else if (
         error.response?.data?.message &&
         error.response.data.message.includes('Email ya registrado')
       ) {
-        // Error específico de email ya registrado
         setServerErrors({ email: 'Email ya registrado' });
       } else {
-        // Otros errores generales
         toast.error(error.response?.data?.message || 'Registration failed');
       }
     } finally {

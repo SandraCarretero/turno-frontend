@@ -20,7 +20,7 @@ import {
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [searchType, setSearchType] = useState('users'); // 'users' or 'games'
+  const [searchType, setSearchType] = useState('users');
   const searchRef = useRef(null);
   const navigate = useNavigate();
 

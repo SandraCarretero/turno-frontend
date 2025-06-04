@@ -29,12 +29,11 @@ const GuestSyncModal = ({ isOpen, onClose, guestId }) => {
     onSuccess: data => {
       toast.success(data.data.message || 'Guest synced successfully');
 
-      // Invalidar múltiples queries para refrescar los datos
       queryClient.invalidateQueries(['guests']);
       queryClient.invalidateQueries(['guest', guestId]);
-      queryClient.invalidateQueries(['matches']); // Invalidar todas las partidas
-      queryClient.invalidateQueries(['userMatches']); // Invalidar partidas del usuario
-      queryClient.invalidateQueries(['match']); // Invalidar partidas individuales
+      queryClient.invalidateQueries(['matches']); 
+      queryClient.invalidateQueries(['userMatches']);
+      queryClient.invalidateQueries(['match']); 
 
       onClose();
     },

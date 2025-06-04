@@ -75,7 +75,7 @@ const NotificationItem = ({ notification, onAcceptFriendRequest }) => {
     e.stopPropagation();
 
     await onAcceptFriendRequest(notification.sender._id);
-    setAccepted(true); // Ocultar botón
+    setAccepted(true);
   };
 
   const link = getNotificationLink();

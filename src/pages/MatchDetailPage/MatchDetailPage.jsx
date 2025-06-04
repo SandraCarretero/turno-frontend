@@ -114,7 +114,6 @@ const MatchDetailPage = () => {
     return player.user && (player.guest || player.guestName);
   };
 
-  // Función para agrupar jugadores por equipos
   const getPlayersByTeam = () => {
     if (!match?.isTeamGame) return null;
 
@@ -129,7 +128,6 @@ const MatchDetailPage = () => {
     return teams;
   };
 
-  // Función para obtener el resultado cooperativo
   const getCooperativeResult = () => {
     if (!match?.isCooperative) return null;
     const hasWinners = match.players.some(player => player.isWinner);

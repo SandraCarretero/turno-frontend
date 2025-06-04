@@ -4,7 +4,6 @@ import { ChartContainer, ChartSection, ChartTitle, ChartsGrid } from "./StatsCha
 const StatsCharts = ({ stats }) => {
   if (!stats) return null
 
-  // Prepare monthly data
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   const monthlyData = monthNames.map((month, index) => {
     const monthStat = stats.monthlyStats?.find((stat) => stat._id === index + 1)
@@ -15,7 +14,6 @@ const StatsCharts = ({ stats }) => {
     }
   })
 
-  // Prepare win/loss data for pie chart
   const winLossData = [
     { name: "Wins", value: stats.wins, color: "#28a745" },
     { name: "Losses", value: stats.totalMatches - stats.wins, color: "#dc3545" },

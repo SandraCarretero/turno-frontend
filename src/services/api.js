@@ -97,9 +97,9 @@ export const notificationAPI = {
 export const guestAPI = {
   createGuest: async guestData => {
     try {
-      console.log('Sending guest data:', guestData); // Debug
+      console.log('Sending guest data:', guestData); 
       const response = await api.post('/guests', guestData);
-      console.log('Guest creation response:', response.data); // Debug
+      console.log('Guest creation response:', response.data);
       return response.data;
     } catch (error) {
       console.error(

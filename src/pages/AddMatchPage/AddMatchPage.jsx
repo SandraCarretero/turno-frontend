@@ -47,7 +47,6 @@ import UserAvatar from '../../components/UserAvatar/UserAvatar';
 import GuestSelector from '../../components/GuestSelector/GuestSelector';
 import GuestSyncModal from '../../components/GuestSyncModal/GuestSyncModal';
 
-// Hook personalizado para debounce
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -76,15 +75,12 @@ const AddMatchPage = ({ editMode = false }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Estado para el sistema de invitados persistentes
   const [showGuestSelector, setShowGuestSelector] = useState(false);
   const [syncModalGuestId, setSyncModalGuestId] = useState(null);
 
-  // Estados para juegos cooperativos y por equipos
-  const [cooperativeResult, setCooperativeResult] = useState(true); // true = won, false = lost
+  const [cooperativeResult, setCooperativeResult] = useState(true); 
   const [availableTeams] = useState(['Team A', 'Team B', 'Team C', 'Team D']);
 
-  // Debounce para las búsquedas de juegos (800ms para evitar rate limit)
   const debouncedGameQuery = useDebounce(gameQuery, 800);
   const debouncedPlayerQuery = useDebounce(playerQuery, 300);
 
@@ -99,7 +95,6 @@ const AddMatchPage = ({ editMode = false }) => {
     queryFn: () => guestAPI.getGuests()
   });
 
-  // Crear un mapa de invitados sincronizados para búsqueda rápida
   const syncedGuestsMap = {};
   if (guestsData && Array.isArray(guestsData)) {
     guestsData.forEach(guest => {
@@ -170,7 +165,6 @@ const AddMatchPage = ({ editMode = false }) => {
         team: player.team || null
       }));
 
-      // Detectar resultado cooperativo
       if (existingMatch.isCooperative) {
         const hasWinners = formattedPlayers.some(p => p.isWinner);
         setCooperativeResult(hasWinners);
@@ -198,7 +192,6 @@ const AddMatchPage = ({ editMode = false }) => {
   const isTeamGame = watch('isTeamGame');
   const hasWinner = watch('hasWinner');
 
-  // Search games con debounce y manejo de errores mejorado
   const {
     data: games = [],
     isFetching: isFetchingGames,
@@ -233,7 +226,6 @@ const AddMatchPage = ({ editMode = false }) => {
     cacheTime: 10 * 60 * 1000
   });
 
-  // Search users con debounce
   const { data: users = [] } = useQuery({
     queryKey: ['searchUsers', debouncedPlayerQuery],
     queryFn: async () => {
@@ -307,15 +299,12 @@ const AddMatchPage = ({ editMode = false }) => {
     return syncedGuestsMap[guestId] !== undefined;
   };
 
-  // Función para obtener equipos únicos - CORREGIDA para detectar cambios en tiempo real
   const getUniqueTeams = () => {
-    // Usar watch para obtener los valores actuales del formulario en tiempo real
     const currentPlayers = watch('players') || [];
     const teams = currentPlayers.map(player => player.team).filter(Boolean);
     return [...new Set(teams)];
   };
 
-  // Función para verificar si un equipo ha ganado
   const isTeamWinner = teamName => {
     const currentPlayers = watch('players') || [];
     return currentPlayers.some(
@@ -323,7 +312,6 @@ const AddMatchPage = ({ editMode = false }) => {
     );
   };
 
-  // Función para marcar ganadores por equipo
   const handleTeamWin = teamName => {
     const currentPlayers = watch('players') || [];
 
@@ -336,7 +324,6 @@ const AddMatchPage = ({ editMode = false }) => {
     });
   };
 
-  // Función para obtener el estilo del botón de equipo
   const getTeamButtonStyle = teamName => {
     const isWinner = isTeamWinner(teamName);
     const baseStyle = {
@@ -382,7 +369,6 @@ const AddMatchPage = ({ editMode = false }) => {
       return;
     }
 
-    // Validaciones específicas para juegos por equipos
     if (data.isTeamGame) {
       const playersWithTeams = data.players.filter(p => p.team);
       if (playersWithTeams.length === 0) {
@@ -571,7 +557,6 @@ const AddMatchPage = ({ editMode = false }) => {
                     </div>
                   </PlayerInfo>
 
-                  {/* Team Selection for Team Games */}
                   {isTeamGame && (
                     <InputGroup>
                       <Label>Team</Label>
@@ -599,7 +584,6 @@ const AddMatchPage = ({ editMode = false }) => {
                     />
                   </InputGroup>
 
-                  {/* Winner Selection - Different logic for different game types */}
                   {hasWinner && !isCooperative && !isTeamGame && (
                     <CheckboxGroup>
                       <Checkbox
@@ -625,7 +609,6 @@ const AddMatchPage = ({ editMode = false }) => {
               ))}
             </PlayersList>
 
-            {/* Cooperative Game Result */}
             {isCooperative && hasWinner && (
               <div
                 style={{
@@ -690,7 +673,6 @@ const AddMatchPage = ({ editMode = false }) => {
               </div>
             )}
 
-            {/* Team Game Winners */}
             {isTeamGame &&
               hasWinner &&
               !isCooperative &&
@@ -825,7 +807,6 @@ const AddMatchPage = ({ editMode = false }) => {
           </PlayersSection>
         </Section>
 
-        {/* Match Details */}
         <Section>
           <SectionTitle>
             <Calendar size={20} />

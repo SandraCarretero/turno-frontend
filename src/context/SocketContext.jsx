@@ -13,13 +13,10 @@ export const useSocket = () => {
   return context
 }
 
-// Función para obtener la URL del servidor según el entorno
 const getServerUrl = () => {
-  // En producción (cuando no es localhost)
   if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
     return "https://turno-backend-fhmm.onrender.com"
   }
-  // En desarrollo local
   return "http://localhost:5000"
 }
 
@@ -38,14 +35,13 @@ export const SocketProvider = ({ children }) => {
 
       const newSocket = io(getServerUrl(), {
         auth: { token },
-        transports: ["websocket", "polling"], // Usar ambos transportes
+        transports: ["websocket", "polling"],
         timeout: 20000,
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
       })
 
-      // Eventos de conexión
       newSocket.on("connect", () => {
         console.log("✅ Connected to Socket.IO server:", newSocket.id)
         setIsConnected(true)
@@ -69,7 +65,6 @@ export const SocketProvider = ({ children }) => {
         setConnectionError(null)
       })
 
-      // Eventos de notificaciones
       newSocket.on("notification", (notification) => {
         console.log("🔔 New notification received:", notification)
         setNotifications((prev) => [notification, ...prev])
@@ -81,12 +76,10 @@ export const SocketProvider = ({ children }) => {
         setNotifications(initialNotifications)
       })
 
-      // Escuchar cuando una notificación se marca como leída
       newSocket.on("notification_read", ({ notificationId }) => {
         setNotifications((prev) => prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n)))
       })
 
-      // Escuchar cuando todas las notificaciones se marcan como leídas
       newSocket.on("all_notifications_read", () => {
         setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
       })
@@ -101,7 +94,6 @@ export const SocketProvider = ({ children }) => {
         setConnectionError(null)
       }
     } else {
-      // Si no hay usuario, limpiar la conexión
       if (socket) {
         console.log("🔌 No user, disconnecting socket")
         socket.close()
@@ -133,7 +125,6 @@ export const SocketProvider = ({ children }) => {
   const markAsRead = (notificationId) => {
     if (socket && isConnected) {
       socket.emit("mark_notification_read", { notificationId })
-      // Actualización optimista
       setNotifications((prev) => prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n)))
     }
   }
@@ -141,7 +132,6 @@ export const SocketProvider = ({ children }) => {
   const markAllAsRead = () => {
     if (socket && isConnected) {
       socket.emit("mark_all_notifications_read")
-      // Actualización optimista
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
     }
   }

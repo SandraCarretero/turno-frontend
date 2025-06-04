@@ -32,7 +32,6 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validación del archivo
     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!validTypes.includes(file.type)) {
       toast.error('Solo se permiten imágenes JPEG, PNG o GIF');
@@ -68,7 +67,6 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
 
       toast.error(errorMessage);
     } finally {
-      // Limpia el input de archivo
       event.target.value = '';
     }
   };

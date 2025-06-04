@@ -26,7 +26,6 @@ const NotificationsPage = () => {
   const markAllAsReadMutation = useMutation({
     mutationFn: notificationAPI.markAllAsRead,
     onSuccess: () => {
-      // Actualizar el caché para reflejar que todas las notificaciones están leídas
       queryClient.setQueryData(['notifications'], oldData => {
         if (!oldData) return oldData;
 
@@ -40,12 +39,10 @@ const NotificationsPage = () => {
         };
       });
 
-      // Invalidar múltiples queries relacionadas con notificaciones
       queryClient.invalidateQueries(['notificationCount']);
       queryClient.invalidateQueries(['unreadNotifications']);
       queryClient.invalidateQueries(['userStats']);
 
-      // También actualizar directamente el contador si existe en el caché
       queryClient.setQueryData(['notificationCount'], 0);
       queryClient.setQueryData(['unreadNotifications'], []);
     },
@@ -55,16 +52,14 @@ const NotificationsPage = () => {
   });
 
   useEffect(() => {
-    // Solo marcar como leídas si hay notificaciones sin leer
     if (notificationsData && notificationsData.unreadCount > 0) {
-      // Pequeño delay para asegurar que la UI se renderice primero
       const timer = setTimeout(() => {
         markAllAsReadMutation.mutate();
       }, 100);
 
       return () => clearTimeout(timer);
     }
-  }, [notificationsData]); // Dependencia más específica
+  }, [notificationsData]);
 
   const acceptFriendRequestMutation = useMutation({
     mutationFn: userAPI.acceptFriendRequest,

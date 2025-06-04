@@ -11,14 +11,10 @@ const Header = () => {
   const { notifications, markAllAsRead } = useSocket()
   const location = useLocation()
 
-  // Determinar si estamos en la página de notificaciones
   const isNotificationsPage = location.pathname === "/notifications"
 
-  // Calcular el número de notificaciones no leídas
-  // Si estamos en la página de notificaciones, forzar a 0
   const unreadCount = isNotificationsPage ? 0 : notifications.filter((n) => !n.isRead).length
 
-  // Marcar todas las notificaciones como leídas cuando entramos a la página de notificaciones
   useEffect(() => {
     if (isNotificationsPage && notifications.some((n) => !n.isRead)) {
       markAllAsRead()

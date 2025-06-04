@@ -32,9 +32,9 @@ const EditProfileModal = ({ onClose }) => {
 
     setLoading(true);
     try {
-      await userAPI.deleteUser(); // Aquí tu llamada API para eliminar usuario
+      await userAPI.deleteUser();
       toast.success('Account deleted successfully');
-      logout(); // Cerrar sesión después de eliminar cuenta
+      logout();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to delete account');
     } finally {

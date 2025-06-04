@@ -30,7 +30,6 @@ const GuestSelector = ({ onGuestSelect, selectedGuests = [], onClose }) => {
   });
 
   const handleCreateGuest = async () => {
-    // Validación en el frontend
     if (!newGuestName.trim()) {
       toast.error('Guest name is required');
       return;
@@ -56,7 +55,6 @@ const GuestSelector = ({ onGuestSelect, selectedGuests = [], onClose }) => {
         name: newGuestName.trim()
       };
 
-      // Solo añadir email si no está vacío
       if (newGuestEmail && newGuestEmail.trim()) {
         guestData.email = newGuestEmail.trim();
       }
@@ -67,7 +65,6 @@ const GuestSelector = ({ onGuestSelect, selectedGuests = [], onClose }) => {
 
       console.log('Guest created successfully:', response);
 
-      // La respuesta debería tener la estructura: { success: true, guest: {...}, message: "..." }
       if (response.success && response.guest) {
         onGuestSelect(response.guest);
         setNewGuestName('');
@@ -82,7 +79,6 @@ const GuestSelector = ({ onGuestSelect, selectedGuests = [], onClose }) => {
     } catch (error) {
       console.error('Error creating guest:', error);
 
-      // Mostrar errores específicos de validación
       if (error.response?.data?.errors) {
         const errorMessages = error.response.data.errors
           .map(err => err.msg)

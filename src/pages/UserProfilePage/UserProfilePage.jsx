@@ -85,14 +85,13 @@ const UserProfilePage = () => {
   const { user: profileUser, matches } = profileData
   const isOwnProfile = currentUser?._id === profileUser._id
 
-  // Check friendship status
   const friendshipStatus = () => {
     if (isOwnProfile) return "self"
 
     const friendship = profileUser.friends?.find((f) => f.user._id === currentUser._id)
     if (!friendship) return "none"
 
-    return friendship.status // "pending" or "accepted"
+    return friendship.status 
   }
 
   const currentUserFriendship = currentUser?.friends?.find((f) => f.user === profileUser._id)

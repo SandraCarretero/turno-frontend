@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('matches');
   const [showEditModal, setShowEditModal] = useState(false);
-  const { user } = useAuth(); // Asegúrate de que updateUser esté disponible
+  const { user } = useAuth(); 
   const { userId } = useParams();
   const queryClient = useQueryClient();
 
