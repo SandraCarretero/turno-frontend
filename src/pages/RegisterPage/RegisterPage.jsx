@@ -36,9 +36,7 @@ const RegisterPage = () => {
     setServerErrors({});
     try {
       await registerUser(data);
-      toast.success(
-        'Cuenta creada correctamente! Por favor revisa el correo'
-      );
+      toast.success('Cuenta creada correctamente! Por favor revisa el correo');
       navigate('/');
     } catch (error) {
       console.log('Error response:', error.response?.data);
@@ -81,7 +79,7 @@ const RegisterPage = () => {
             <Input
               type="text"
               {...register('username', {
-                required: 'Nombre de usuario es requerido',
+                required: 'Nombre de usuario es obligatorio',
                 minLength: {
                   value: 3,
                   message: 'El nombre de usuario debe tener al menos 3 letras'
@@ -110,7 +108,7 @@ const RegisterPage = () => {
             <Input
               type="email"
               {...register('email', {
-                required: 'El email es requerido',
+                required: 'El email es obligatorio',
                 pattern: {
                   value: /^\S+@\S+$/i,
                   message: 'Email inválido'
@@ -130,7 +128,7 @@ const RegisterPage = () => {
             <Input
               type="password"
               {...register('password', {
-                required: 'La contraseña es requerida',
+                required: 'La contraseña es obligatoria',
                 minLength: {
                   value: 6,
                   message: 'La contraseña debe tener al menos 6 caracteres'

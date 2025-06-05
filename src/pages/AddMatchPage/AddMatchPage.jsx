@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom"
@@ -182,6 +184,10 @@ const AddMatchPage = ({ editMode = false }) => {
     name: "players",
   })
 
+  const isCooperative = watch("isCooperative")
+  const isTeamGame = watch("isTeamGame")
+  const hasWinner = watch("hasWinner")
+
   useEffect(() => {
     if (editMode && existingMatch && !isLoadingMatch) {
       const formattedPlayers = existingMatch.players.map((player) => ({
@@ -218,9 +224,18 @@ const AddMatchPage = ({ editMode = false }) => {
     }
   }, [editMode, existingMatch, isLoadingMatch, reset, replace])
 
-  const isCooperative = watch("isCooperative")
-  const isTeamGame = watch("isTeamGame")
-  const hasWinner = watch("hasWinner")
+  // Lógica para manejar la exclusión mutua entre cooperativo y equipos
+  useEffect(() => {
+    if (isCooperative) {
+      setValue("isTeamGame", false)
+    }
+  }, [isCooperative, setValue])
+
+  useEffect(() => {
+    if (isTeamGame) {
+      setValue("isCooperative", false)
+    }
+  }, [isTeamGame, setValue])
 
   const {
     data: games = [],
@@ -779,19 +794,23 @@ const AddMatchPage = ({ editMode = false }) => {
           </InputGroup>
 
           <CheckboxGroup>
-            <Checkbox type="checkbox" {...register("isCooperative")} id="cooperative" />
-            <CheckboxLabel htmlFor="cooperative">Cooperative Game</CheckboxLabel>
+            <Checkbox type="checkbox" {...register("isCooperative")} id="cooperative" disabled={isTeamGame} />
+            <CheckboxLabel htmlFor="cooperative" style={{ opacity: isTeamGame ? 0.5 : 1 }}>
+              Juego cooperativo
+            </CheckboxLabel>
           </CheckboxGroup>
 
           <CheckboxGroup>
-            <Checkbox type="checkbox" {...register("isTeamGame")} id="teamGame" />
-            <CheckboxLabel htmlFor="teamGame">Team Game</CheckboxLabel>
+            <Checkbox type="checkbox" {...register("isTeamGame")} id="teamGame" disabled={isCooperative} />
+            <CheckboxLabel htmlFor="teamGame" style={{ opacity: isCooperative ? 0.5 : 1 }}>
+              Juego en equipos
+            </CheckboxLabel>
           </CheckboxGroup>
 
           {!isCooperative && (
             <CheckboxGroup>
               <Checkbox type="checkbox" {...register("hasWinner")} id="hasWinner" />
-              <CheckboxLabel htmlFor="hasWinner">Has Winner</CheckboxLabel>
+              <CheckboxLabel htmlFor="hasWinner">Tiene ganador</CheckboxLabel>
             </CheckboxGroup>
           )}
 

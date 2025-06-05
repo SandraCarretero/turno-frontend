@@ -88,7 +88,7 @@ const EditProfileModal = ({ onClose }) => {
               <Input
                 type="text"
                 {...register('username', {
-                  required: 'El usuario es requerido',
+                  required: 'El usuario es obligatorio',
                   minLength: {
                     value: 3,
                     message: 'El usuario debe tener al menos 3 caracteres'
@@ -114,7 +114,7 @@ const EditProfileModal = ({ onClose }) => {
               <Input
                 type="email"
                 {...register('email', {
-                  required: 'El email es requerido',
+                  required: 'El email es obligatorio',
                   pattern: {
                     value: /^\S+@\S+$/i,
                     message: 'Email inválido'

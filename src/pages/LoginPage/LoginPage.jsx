@@ -51,7 +51,7 @@ const LoginPage = () => {
             <Input
               type="email"
               {...register('email', {
-                required: 'El email es requerido',
+                required: 'El email es obligatorio',
                 pattern: {
                   value: /^\S+@\S+$/i,
                   message: 'Email inválido'
@@ -69,7 +69,7 @@ const LoginPage = () => {
             <Input
               type="password"
               {...register('password', {
-                required: 'La contraseña es requerida',
+                required: 'La contraseña es obligatoria',
                 minLength: {
                   value: 6,
                   message: 'Contraseña inválida'
@@ -88,7 +88,7 @@ const LoginPage = () => {
         </Form>
 
         <LinkText>
-          {"¿No tienes cuenta aún? "}
+          {'¿No tienes cuenta aún? '}
           <Link to="/register">Regístrate aquí</Link>
         </LinkText>
       </FormContainer>

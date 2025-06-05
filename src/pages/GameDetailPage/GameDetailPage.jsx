@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { gameAPI, matchAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -10,11 +12,13 @@ import {
   Clock,
   Star,
   TrendingUp,
-  Calendar
+  Calendar,
+  ArrowLeft
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   PageContainer,
+  BackButton,
   GameHeader,
   GameImage,
   GameInfo,
@@ -59,25 +63,15 @@ const GameDetailPage = () => {
     }
   });
 
-  const { data: matchesData, isLoading: matchesLoading } = useQuery({
-    queryKey: ['gameMatches', gameId],
-    queryFn: () =>
-      matchAPI.getMatchesByGameId
-        ? matchAPI.getMatchesByGameId(gameId)
-        : Promise.resolve({ matches: [] }),
-    enabled: !!gameId
-  });
-  console.log('gameId:', gameId);
-
   const addToCollectionMutation = useMutation({
     mutationFn: gameAPI.addGameToCollection,
     onSuccess: () => {
       setIsInCollection(true);
       queryClient.invalidateQueries(['userProfile']);
-      toast.success('Game added to collection!');
+      toast.success('¡Juego añadido a la colección!');
     },
     onError: error => {
-      toast.error(error.response?.data?.message || 'Error al añadir un juego');
+      toast.error(error.response?.data?.message || 'Error al añadir el juego');
     }
   });
 
@@ -86,7 +80,7 @@ const GameDetailPage = () => {
     onSuccess: () => {
       setIsInCollection(false);
       queryClient.invalidateQueries(['userProfile']);
-      toast.success('Juego eliminado de la colección!');
+      toast.success('¡Juego eliminado de la colección!');
     },
     onError: error => {
       toast.error(
@@ -112,6 +106,10 @@ const GameDetailPage = () => {
     }
   };
 
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   if (gameLoading) {
     return (
       <PageContainer>
@@ -129,10 +127,14 @@ const GameDetailPage = () => {
     );
   }
 
-  const matches = matchesData?.matches || [];
 
   return (
     <PageContainer>
+      <BackButton as={Link} to="/profile">
+        <ArrowLeft size={20} />
+        Volver
+      </BackButton>
+
       <GameHeader>
         <GameImage src={game.image} alt={game.name} />
         <GameInfo>
@@ -159,6 +161,20 @@ const GameDetailPage = () => {
           </GameMeta>
         </GameInfo>
       </GameHeader>
+      <ActionButtons>
+        <ActionButton
+          onClick={handleToggleCollection}
+          disabled={
+            addToCollectionMutation.isLoading ||
+            removeFromCollectionMutation.isLoading
+          }
+          $variant={isInCollection ? 'secondary' : 'primary'}
+        >
+          {isInCollection ? <Minus size={16} /> : <Plus size={16} />}
+          {isInCollection ? 'Quitar de Colección' : 'Añadir a Colección'}
+        </ActionButton>
+      </ActionButtons>
+
       {game.description && (
         <GameDescription
           dangerouslySetInnerHTML={{
@@ -168,23 +184,9 @@ const GameDetailPage = () => {
         />
       )}
 
-      <ActionButtons>
-        <ActionButton
-          onClick={handleToggleCollection}
-          disabled={
-            addToCollectionMutation.isLoading ||
-            removeFromCollectionMutation.isLoading
-          }
-          variant={isInCollection ? 'secondary' : 'primary'}
-        >
-          {isInCollection ? <Minus size={16} /> : <Plus size={16} />}
-          {isInCollection ? 'Remove from Collection' : 'Add to Collection'}
-        </ActionButton>
-      </ActionButtons>
-
       <GameStats>
         <StatCard>
-          <StatIcon color="#FF611A">
+          <StatIcon $color="#FF611A">
             <Users size={24} />
           </StatIcon>
           <StatValue>
@@ -196,7 +198,7 @@ const GameDetailPage = () => {
         </StatCard>
 
         <StatCard>
-          <StatIcon color="#D9B8E6">
+          <StatIcon $color="#D9B8E6">
             <Clock size={24} />
           </StatIcon>
           <StatValue>{game.playingTime}</StatValue>
@@ -205,7 +207,7 @@ const GameDetailPage = () => {
 
         {game.rating > 0 && (
           <StatCard>
-            <StatIcon color="#ffc107">
+            <StatIcon $color="#ffc107">
               <Star size={24} />
             </StatIcon>
             <StatValue>{game.rating.toFixed(1)}</StatValue>
@@ -215,7 +217,7 @@ const GameDetailPage = () => {
 
         {game.complexity > 0 && (
           <StatCard>
-            <StatIcon color="#1AB3A6">
+            <StatIcon $color="#1AB3A6">
               <TrendingUp size={24} />
             </StatIcon>
             <StatValue>{game.complexity.toFixed(1)}</StatValue>

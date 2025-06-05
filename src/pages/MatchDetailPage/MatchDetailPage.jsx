@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24,6 +26,7 @@ import {
   MatchHeader,
   GameInfo,
   GameImage,
+  GameImageContainer,
   GameDetails,
   GameTitle,
   MatchMeta,
@@ -37,6 +40,7 @@ import {
   PlayerCard,
   PlayerInfo,
   PlayerName,
+  PlayerScore,
   WinnerBadge,
   MatchNotes,
   LoadingText,
@@ -47,10 +51,31 @@ import {
   ModalTitle,
   ModalText,
   ModalButtons,
-  ModalButton
+  ModalButton,
+  TeamContainer,
+  TeamHeader,
+  TeamName,
+  TeamWinnerBadge,
+  CooperativeResult,
+  CooperativeIcon,
+  CooperativeTitle,
+  CooperativeText,
+  MatchDetailsGrid,
+  MatchDetailItem,
+  MatchDetailLabel,
+  MatchDetailValue,
+  MatchDetailLink,
+  GuestBadge,
+  SyncedBadge,
+  WinnersDisplay,
+  GameRating,
+  GameTitleSection,
+  GameSubtitle,
+  MatchMetaGrid
 } from './MatchDetailPage.styles';
 import { AvatarPlaceholder } from '../../components/UserAvatar/UserAvatar.styles';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
+import Loader from '../../components/Loader/Loader';
 
 const MatchDetailPage = () => {
   const { matchId } = useParams();
@@ -72,12 +97,14 @@ const MatchDetailPage = () => {
   const deleteMatchMutation = useMutation({
     mutationFn: matchAPI.deleteMatch,
     onSuccess: () => {
-      toast.success('Match deleted successfully!');
+      toast.success('¡Partida eliminada con éxito!');
       queryClient.invalidateQueries(['userMatches']);
       navigate('/profile');
     },
     onError: error => {
-      toast.error(error.response?.data?.message || 'Failed to delete match');
+      toast.error(
+        error.response?.data?.message || 'Error al eliminar la partida'
+      );
     }
   });
 
@@ -93,7 +120,7 @@ const MatchDetailPage = () => {
     if (player.guestName) {
       return player.guestName;
     }
-    return 'Unknown Player';
+    return 'Jugador Desconocido';
   };
 
   const getPlayerAvatar = player => {
@@ -119,7 +146,7 @@ const MatchDetailPage = () => {
 
     const teams = {};
     match.players.forEach(player => {
-      const teamName = player.team || 'No Team';
+      const teamName = player.team || 'Sin Equipo';
       if (!teams[teamName]) {
         teams[teamName] = [];
       }
@@ -137,7 +164,8 @@ const MatchDetailPage = () => {
   if (isLoading) {
     return (
       <PageContainer>
-        <LoadingText>Loading match details...</LoadingText>
+        <LoadingText>Cargando detalles de la partida...</LoadingText>
+        <Loader />
       </PageContainer>
     );
   }
@@ -145,7 +173,7 @@ const MatchDetailPage = () => {
   if (error || !match) {
     return (
       <PageContainer>
-        <ErrorMessage>Failed to load match details</ErrorMessage>
+        <ErrorMessage>Error al cargar los detalles de la partida</ErrorMessage>
       </PageContainer>
     );
   }
@@ -157,7 +185,7 @@ const MatchDetailPage = () => {
   const cooperativeResult = getCooperativeResult();
 
   const formatDate = date => {
-    return new Date(date).toLocaleDateString('en-US', {
+    return new Date(date).toLocaleDateString('es-ES', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -198,174 +226,192 @@ const MatchDetailPage = () => {
     <PageContainer>
       <BackButton as={Link} to="/profile">
         <ArrowLeft size={20} />
-        Back to Profile
+        Volver al Perfil
       </BackButton>
 
       <MatchHeader>
         <GameInfo>
-          <GameImage
-            src={match.game.image || '/placeholder.svg?height=80&width=80'}
-            alt={match.game.name}
-          />
-          <GameDetails>
-            <GameTitle>{match.game.name}</GameTitle>
-            <MatchMeta>
-              <MetaItem>
-                <Calendar size={16} />
-                {formatDate(match.date)}
-              </MetaItem>
-              <MetaItem>
-                <Clock size={16} />
-                {formatDuration(match.duration)}
-              </MetaItem>
-              <MetaItem>
-                <MapPin size={16} />
-                {match.location}
-              </MetaItem>
-              <MetaItem>
-                <Users size={16} />
-                {match.players.length} players
-              </MetaItem>
-              <MetaItem style={{ color: getStatusColor(match.status) }}>
-                <Star size={16} />
-                {match.status.charAt(0).toUpperCase() + match.status.slice(1)}
-              </MetaItem>
-            </MatchMeta>
-          </GameDetails>
-        </GameInfo>
-
-        {(isCreator || isParticipant) && (
-          <ActionButtons>
-            {isCreator && (
-              <>
-                <ActionButton
-                  variant="secondary"
-                  as={Link}
-                  to={`/matches/${matchId}/edit`}
-                >
-                  <Edit size={16} />
-                  Edit Match
-                </ActionButton>
-                <ActionButton
-                  variant="danger"
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  <Trash2 size={16} />
-                  Delete
-                </ActionButton>
-              </>
+          <GameImageContainer>
+            <GameImage
+              src={
+                match.game.image ||
+                '/placeholder.svg?height=180&width=180&query=board game'
+              }
+              alt={match.game.name}
+            />
+            {match.game.rating && (
+              <GameRating>
+                <Star size={14} />
+                {match.game.rating.toFixed(1)}
+              </GameRating>
             )}
-          </ActionButtons>
-        )}
+          </GameImageContainer>
+
+          <GameDetails>
+            <GameTitleSection>
+              <GameTitle>{match.game.name}</GameTitle>
+              <GameSubtitle>
+                Partida jugada el {formatDate(match.date)}
+              </GameSubtitle>
+            </GameTitleSection>
+
+            <MatchMetaGrid>
+              <MatchMeta>
+                <MetaItem>
+                  <Calendar size={18} />
+                  <div>
+                    <strong>Fecha</strong>
+                    <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                      {formatDate(match.date)}
+                    </div>
+                  </div>
+                </MetaItem>
+                <MetaItem>
+                  <Clock size={18} />
+                  <div>
+                    <strong>Duración</strong>
+                    <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                      {formatDuration(match.duration)}
+                    </div>
+                  </div>
+                </MetaItem>
+                <MetaItem>
+                  <MapPin size={18} />
+                  <div>
+                    <strong>Ubicación</strong>
+                    <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                      {match.location}
+                    </div>
+                  </div>
+                </MetaItem>
+                <MetaItem>
+                  <Users size={18} />
+                  <div>
+                    <strong>Jugadores</strong>
+                    <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                      {match.players.length} participantes
+                    </div>
+                  </div>
+                </MetaItem>
+                <MetaItem $statusColor={getStatusColor(match.status)}>
+                  <Star size={18} />
+                  <div>
+                    <strong>Estado</strong>
+                    <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                      {match.status === 'completed'
+                        ? 'Completada'
+                        : match.status === 'in-progress'
+                        ? 'En Progreso'
+                        : 'Programada'}
+                    </div>
+                  </div>
+                </MetaItem>
+                <MetaItem>
+                  <Trophy size={18} />
+                  <div>
+                    <strong>Tipo</strong>
+                    <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                      {match.isCooperative
+                        ? 'Cooperativo'
+                        : match.isTeamGame
+                        ? 'Por Equipos'
+                        : 'Competitivo'}
+                    </div>
+                  </div>
+                </MetaItem>
+              </MatchMeta>
+            </MatchMetaGrid>
+          </GameDetails>
+
+          {(isCreator || isParticipant) && (
+            <ActionButtons>
+              {isCreator && (
+                <>
+                  <ActionButton
+                    $variant="secondary"
+                    as={Link}
+                    to={`/matches/${matchId}/edit`}
+                  >
+                    <Edit size={16} />
+                    Editar
+                  </ActionButton>
+                  <ActionButton
+                    $variant="danger"
+                    onClick={() => setShowDeleteModal(true)}
+                  >
+                    <Trash2 size={16} />
+                    Eliminar
+                  </ActionButton>
+                </>
+              )}
+            </ActionButtons>
+          )}
+        </GameInfo>
       </MatchHeader>
 
       <MatchContent>
         <Section>
           <SectionTitle>
             <Users size={20} />
-            Players & Results
+            Jugadores y Resultados
           </SectionTitle>
 
           {/* Cooperative Game Result */}
           {match.isCooperative && (
-            <div
-              style={{
-                marginBottom: '1.5rem',
-                padding: '1rem',
-                backgroundColor: cooperativeResult ? '#d4edda' : '#f8d7da',
-                border: `1px solid ${
-                  cooperativeResult ? '#c3e6cb' : '#f5c6cb'
-                }`,
-                borderRadius: '8px',
-                textAlign: 'center'
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem'
-                }}
-              >
-                <Trophy
-                  size={20}
-                  style={{ color: cooperativeResult ? '#28a745' : '#dc3545' }}
-                />
-                <h3
-                  style={{
-                    margin: 0,
-                    color: cooperativeResult ? '#155724' : '#721c24'
-                  }}
-                >
-                  {cooperativeResult ? '🎉 Team Victory!' : '😞 Team Defeat'}
-                </h3>
+            <CooperativeResult $success={cooperativeResult}>
+              <CooperativeIcon>
+                <Trophy size={24} />
+              </CooperativeIcon>
+              <div>
+                <CooperativeTitle>
+                  {cooperativeResult
+                    ? '🎉 ¡Victoria del Equipo!'
+                    : '😞 Derrota del Equipo'}
+                </CooperativeTitle>
+                <CooperativeText>
+                  Todos los jugadores{' '}
+                  {cooperativeResult ? 'ganaron' : 'perdieron'} juntos en esta
+                  partida cooperativa
+                </CooperativeText>
               </div>
-              <p
-                style={{
-                  margin: '0.5rem 0 0 0',
-                  color: cooperativeResult ? '#155724' : '#721c24'
-                }}
-              >
-                All players {cooperativeResult ? 'won' : 'lost'} together in
-                this cooperative game
-              </p>
-            </div>
+            </CooperativeResult>
           )}
 
           {/* Team Game Display */}
           {match.isTeamGame && playersByTeam ? (
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.5rem'
+              }}
             >
               {Object.entries(playersByTeam).map(([teamName, teamPlayers]) => {
                 const teamWon = teamPlayers.some(player => player.isWinner);
                 return (
-                  <div
+                  <TeamContainer
                     key={teamName}
-                    style={{
-                      padding: '1rem',
-                      backgroundColor: teamWon ? '#d4edda' : '#f8f9fa',
-                      border: `2px solid ${
-                        teamWon ? '#28a745' : getTeamColor(teamName)
-                      }`,
-                      borderRadius: '8px'
-                    }}
+                    $isWinner={teamWon}
+                    $teamColor={getTeamColor(teamName)}
                   >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        marginBottom: '1rem'
-                      }}
-                    >
-                      <Shield
-                        size={20}
-                        style={{ color: getTeamColor(teamName) }}
-                      />
-                      <h4 style={{ margin: 0, color: getTeamColor(teamName) }}>
-                        {teamName}
-                      </h4>
+                    <TeamHeader>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.75rem'
+                        }}
+                      >
+                        <Shield size={20} />
+                        <TeamName>{teamName}</TeamName>
+                      </div>
                       {teamWon && (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            padding: '0.25rem 0.5rem',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            fontWeight: '600'
-                          }}
-                        >
+                        <TeamWinnerBadge>
                           <Trophy size={12} />
-                          WINNERS
-                        </div>
+                          GANADORES
+                        </TeamWinnerBadge>
                       )}
-                    </div>
+                    </TeamHeader>
                     <PlayersGrid>
                       {teamPlayers.map((player, index) => {
                         const displayName = getPlayerName(player);
@@ -388,39 +434,18 @@ const MatchDetailPage = () => {
 
                               <div style={{ flex: 1 }}>
                                 <PlayerName>{displayName}</PlayerName>
-                                <div
-                                  style={{ fontSize: '0.75rem', color: '#666' }}
-                                >
-                                  Score: {player.score}
-                                </div>
+                                <PlayerScore>
+                                  Puntuación: {player.score}
+                                </PlayerScore>
 
                                 {isGuestPlayer && (
-                                  <span
-                                    style={{
-                                      fontSize: '0.7rem',
-                                      color: '#666',
-                                      display: 'block',
-                                      marginTop: '-2px'
-                                    }}
-                                  >
-                                    Guest
-                                  </span>
+                                  <GuestBadge>Invitado</GuestBadge>
                                 )}
-
                                 {isSynced && (
-                                  <span
-                                    style={{
-                                      fontSize: '0.7rem',
-                                      color: '#28a745',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: '2px',
-                                      marginTop: '-2px'
-                                    }}
-                                  >
+                                  <SyncedBadge>
                                     <LinkIcon size={10} />
-                                    Synced User
-                                  </span>
+                                    Usuario Sincronizado
+                                  </SyncedBadge>
                                 )}
                               </div>
                             </PlayerInfo>
@@ -428,7 +453,7 @@ const MatchDetailPage = () => {
                         );
                       })}
                     </PlayersGrid>
-                  </div>
+                  </TeamContainer>
                 );
               })}
             </div>
@@ -456,43 +481,21 @@ const MatchDetailPage = () => {
 
                       <div style={{ flex: 1 }}>
                         <PlayerName>{displayName}</PlayerName>
-                        <div style={{ fontSize: '0.75rem', color: '#666' }}>
-                          Score: {player.score}
-                        </div>
+                        <PlayerScore>Puntuación: {player.score}</PlayerScore>
 
-                        {isGuestPlayer && (
-                          <span
-                            style={{
-                              fontSize: '0.7rem',
-                              color: '#666',
-                              display: 'block',
-                              marginTop: '-2px'
-                            }}
-                          >
-                            Guest
-                          </span>
-                        )}
-
+                        {isGuestPlayer && <GuestBadge>Invitado</GuestBadge>}
                         {isSynced && (
-                          <span
-                            style={{
-                              fontSize: '0.7rem',
-                              color: '#28a745',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '2px',
-                              marginTop: '-2px'
-                            }}
-                          >
+                          <SyncedBadge>
                             <LinkIcon size={10} />
-                            Synced User
-                          </span>
+                            Usuario Sincronizado
+                          </SyncedBadge>
                         )}
                       </div>
 
                       {player.isWinner && !match.isCooperative && (
                         <WinnerBadge>
                           <Trophy size={12} />
+                          GANADOR
                         </WinnerBadge>
                       )}
                     </PlayerInfo>
@@ -504,17 +507,15 @@ const MatchDetailPage = () => {
 
           {/* Individual Winners Display (for non-team, non-cooperative games) */}
           {winners.length > 0 && !match.isTeamGame && !match.isCooperative && (
-            <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-              <p style={{ color: '#28a745', fontWeight: '600' }}>
-                🎉 {winners.length === 1 ? 'Winner' : 'Winners'}:{' '}
-                {winners
-                  .map(w => {
-                    const displayName = getPlayerName(w);
-                    return displayName;
-                  })
-                  .join(', ')}
-              </p>
-            </div>
+            <WinnersDisplay>
+              🎉 {winners.length === 1 ? 'Ganador' : 'Ganadores'}:{' '}
+              {winners
+                .map(w => {
+                  const displayName = getPlayerName(w);
+                  return displayName;
+                })
+                .join(', ')}
+            </WinnersDisplay>
           )}
         </Section>
 
@@ -522,64 +523,46 @@ const MatchDetailPage = () => {
           <Section>
             <SectionTitle>
               <MessageSquare size={20} />
-              Notes
+              Notas
             </SectionTitle>
             <MatchNotes>{match.notes}</MatchNotes>
           </Section>
         )}
 
         <Section>
-          <SectionTitle>Match Details</SectionTitle>
-          <div
-            style={{
-              background: 'white',
-              padding: '1.5rem',
-              borderRadius: '0.75rem',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '1rem'
-              }}
-            >
-              <div>
-                <strong>Created by:</strong>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#6c757d' }}>
-                  <Link
-                    to={`/user/${match.creator._id}`}
-                    style={{ color: '#007bff', textDecoration: 'none' }}
-                  >
-                    {match.creator.username}
-                  </Link>
-                </p>
-              </div>
-              <div>
-                <strong>Game Type:</strong>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#6c757d' }}>
-                  {match.isCooperative
-                    ? 'Cooperative'
-                    : match.isTeamGame
-                    ? 'Team Game'
-                    : 'Competitive'}
-                </p>
-              </div>
-              <div>
-                <strong>Has Winner:</strong>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#6c757d' }}>
-                  {match.hasWinner ? 'Yes' : 'No'}
-                </p>
-              </div>
-              <div>
-                <strong>Created:</strong>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#6c757d' }}>
-                  {new Date(match.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
+          <SectionTitle>Detalles de la Partida</SectionTitle>
+          <MatchDetailsGrid>
+            <MatchDetailItem>
+              <MatchDetailLabel>Creado por:</MatchDetailLabel>
+              <MatchDetailValue>
+                <MatchDetailLink to={`/user/${match.creator._id}`}>
+                  {match.creator.username}
+                </MatchDetailLink>
+              </MatchDetailValue>
+            </MatchDetailItem>
+            <MatchDetailItem>
+              <MatchDetailLabel>Tipo de Juego:</MatchDetailLabel>
+              <MatchDetailValue>
+                {match.isCooperative
+                  ? 'Cooperativo'
+                  : match.isTeamGame
+                  ? 'Por Equipos'
+                  : 'Competitivo'}
+              </MatchDetailValue>
+            </MatchDetailItem>
+            <MatchDetailItem>
+              <MatchDetailLabel>Tiene Ganador:</MatchDetailLabel>
+              <MatchDetailValue>
+                {match.hasWinner ? 'Sí' : 'No'}
+              </MatchDetailValue>
+            </MatchDetailItem>
+            <MatchDetailItem>
+              <MatchDetailLabel>Creado:</MatchDetailLabel>
+              <MatchDetailValue>
+                {new Date(match.createdAt).toLocaleDateString()}
+              </MatchDetailValue>
+            </MatchDetailItem>
+          </MatchDetailsGrid>
         </Section>
       </MatchContent>
 
@@ -587,24 +570,24 @@ const MatchDetailPage = () => {
         <DeleteModal>
           <ModalOverlay onClick={() => setShowDeleteModal(false)} />
           <ModalContent>
-            <ModalTitle>Delete Match</ModalTitle>
+            <ModalTitle>Eliminar Partida</ModalTitle>
             <ModalText>
-              Are you sure you want to delete this match? This action cannot be
-              undone.
+              ¿Estás seguro de que quieres eliminar esta partida? Esta acción no
+              se puede deshacer.
             </ModalText>
             <ModalButtons>
               <ModalButton
-                variant="secondary"
+                $variant="secondary"
                 onClick={() => setShowDeleteModal(false)}
               >
-                Cancel
+                Cancelar
               </ModalButton>
               <ModalButton
-                variant="danger"
+                $variant="danger"
                 onClick={handleDeleteMatch}
                 disabled={deleteMatchMutation.isLoading}
               >
-                {deleteMatchMutation.isLoading ? 'Deleting...' : 'Delete'}
+                {deleteMatchMutation.isLoading ? 'Eliminando...' : 'Eliminar'}
               </ModalButton>
             </ModalButtons>
           </ModalContent>

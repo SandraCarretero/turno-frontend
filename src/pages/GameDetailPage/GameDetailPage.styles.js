@@ -149,14 +149,15 @@ export const StatCard = styled.div`
 `;
 
 export const StatIcon = styled.div`
-  background: ${props => props.color}15;
-  color: ${props => props.color};
-  padding: 0.75rem;
-  border-radius: 0.5rem;
+  background: ${(props) => props.$color}15;
+  color: ${(props) => props.$color};
+  padding: 1rem;
+  border-radius: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+  box-shadow: 0 2px 8px ${(props) => props.$color}20;
+`
 
 export const StatValue = styled.div`
   font-size: 1.5rem;
