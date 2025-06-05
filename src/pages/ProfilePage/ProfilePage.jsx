@@ -18,8 +18,8 @@ const ProfilePage = () => {
   const { userId } = useParams();
   const queryClient = useQueryClient();
 
-  const targetUserId = userId || user?._id;
-  const isOwnProfile = !userId || userId === user?._id;
+  const targetUserId = userId || authUser?._id;
+  const isOwnProfile = !userId || userId === authUser?._id;
 
   const {
     data: profileData,
@@ -36,11 +36,11 @@ const ProfilePage = () => {
     if (
       profileData?.user &&
       isOwnProfile &&
-      profileData.user._id === user?._id
+      profileData.user._id === authUser?._id
     ) {
-      queryClient.setQueryData(['user', user._id], profileData.user);
+      queryClient.setQueryData(['user', authUser._id], profileData.user);
     }
-  }, [profileData, isOwnProfile, user, queryClient]);
+  }, [profileData, isOwnProfile, authUser, queryClient]);
 
   useEffect(() => {
     if (targetUserId) {
