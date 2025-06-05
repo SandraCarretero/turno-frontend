@@ -45,9 +45,11 @@ export const NavItem = styled.div`
     background: var(--color-secondary);
   }
 
-  &:hover {
-    color: var(--color-secondary);
-    background: var(--color-primary-hover);
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-secondary);
+      background: var(--color-primary-hover);
+    }
   }
 
   @media (min-width: 768px) {
@@ -90,7 +92,9 @@ export const AddButton = styled.div`
   transition: all 0.2s;
   padding: 10px;
 
-  &:hover {
-    background: var(--color-secondary-hover);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--color-secondary-hover);
+    }
   }
 `;

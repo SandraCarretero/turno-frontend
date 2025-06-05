@@ -26,10 +26,7 @@ export const Title = styled.h1`
 `;
 
 export const SearchContainer = styled.div`
-  background: white;
   border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 `;
 

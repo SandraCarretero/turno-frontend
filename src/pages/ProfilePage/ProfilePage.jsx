@@ -10,6 +10,7 @@ import EditProfileModal from '../../components/EditProfileModal/EditProfileModal
 import { PageContainer } from './ProfilePage.styles';
 import FriendsList from '../../components/FriendsList/FriendsList';
 import { useParams } from 'react-router-dom';
+import Loader from '../../components/Loader/Loader';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('matches');
@@ -74,17 +75,26 @@ const ProfilePage = () => {
   if (isLoading && !displayUser) {
     return (
       <PageContainer>
-        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>Cargando perfil...</div>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}
+        >
+          Cargando perfil...
+        </div>
+        <Loader />
       </PageContainer>
-    )
+    );
   }
 
   if (error && !displayUser) {
     return (
       <PageContainer>
-        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>Error al cargar el perfil</div>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}
+        >
+          Error al cargar el perfil
+        </div>
       </PageContainer>
-    )
+    );
   }
 
   return (

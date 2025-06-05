@@ -1,10 +1,7 @@
 import styled from 'styled-components';
 
 export const HeaderContainer = styled.div`
-  background: white;
   border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 `;
 
@@ -13,11 +10,7 @@ export const AvatarSection = styled.div`
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-  }
+  flex-direction: row;
 `;
 
 export const AvatarContainer = styled.div`
@@ -36,7 +29,7 @@ export const AvatarPlaceholder = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: #007bff; /* azul o el que uses */
+  background-color: var(--coolor-primary);
   color: white;
   display: flex;
   justify-content: center;
@@ -100,29 +93,22 @@ export const Email = styled.p`
 
 export const Stats = styled.div`
   display: flex;
-  gap: 2rem;
   margin-bottom: 1.5rem;
-  justify-content: center;
-
-  @media (max-width: 768px) {
-    gap: 1rem;
-  }
+  justify-content: space-between;
 `;
 
 export const StatItem = styled.div`
-  text-align: center;
 `;
 
 export const StatValue = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: #007bff;
+  color: var(--color-primary);
 `;
 
 export const StatLabel = styled.div`
   font-size: 0.875rem;
   color: #6c757d;
-  margin-top: 0.25rem;
 `;
 
 export const Actions = styled.div`

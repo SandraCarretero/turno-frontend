@@ -7,6 +7,7 @@ import App from "./App.jsx"
 import { AuthProvider } from "./context/AuthContext.jsx"
 import { SocketProvider } from "./context/SocketContext.jsx"
 import GlobalStyles from "./styles/GlobalStyles.js"
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <AuthProvider>
           <SocketProvider>
             <GlobalStyles />
+            <ScrollToTop />
             <App />
             <Toaster position="top-right" />
           </SocketProvider>

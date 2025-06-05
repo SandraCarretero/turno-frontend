@@ -29,6 +29,7 @@ import {
   EmptyDescription
 } from './SearchPage.styles';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
+import Loader from '../../components/Loader/Loader';
 
 const SearchPage = () => {
   const [searchType, setSearchType] = useState('users');
@@ -83,19 +84,12 @@ const SearchPage = () => {
   const hasResults = results.length > 0;
 
   const searchTypeLabels = {
-  users: 'usuarios',
-  games: 'juegos',
-};
+    users: 'usuarios',
+    games: 'juegos'
+  };
 
   return (
     <PageContainer>
-      <Header>
-        <Title>
-          <Search size={24} />
-          Search
-        </Title>
-      </Header>
-
       <SearchContainer>
         <SearchTypeToggle>
           <ToggleButton
@@ -142,12 +136,17 @@ const SearchPage = () => {
             </EmptyIcon>
             <EmptyTitle>Empieza a buscar</EmptyTitle>
             <EmptyDescription>
-              Escribe al menos 2 caracteres para buscar {' '}
-               {searchTypeLabels[searchType]}
+              Escribe al menos 2 caracteres para buscar{' '}
+              {searchTypeLabels[searchType]}
             </EmptyDescription>
           </EmptyState>
         ) : isLoading ? (
-          <LoadingText>Buscando {searchTypeLabels[searchType]}...</LoadingText>
+          <>
+            <LoadingText>
+              Buscando {searchTypeLabels[searchType]}...
+            </LoadingText>
+            <Loader />
+          </>
         ) : hasResults ? (
           <>
             <ResultsList>

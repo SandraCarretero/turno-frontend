@@ -3,6 +3,7 @@ import { userAPI } from "../../services/api"
 import StatsOverview from "../../components/StatsOverview/StatsOverview"
 import StatsCharts from "../../components/StatsCharts/StatsCharts"
 import { PageContainer, Title } from "./StatsPage.styles"
+import Loader from "../../components/Loader/Loader"
 
 const StatsPage = () => {
   const { data: stats, isLoading } = useQuery({
@@ -13,7 +14,7 @@ const StatsPage = () => {
   if (isLoading) {
     return (
       <PageContainer>
-        <Title>Loading stats...</Title>
+        <Loader/>
       </PageContainer>
     )
   }

@@ -141,27 +141,25 @@ const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
 
         <UserInfo>
           <Username>{displayUser?.username}</Username>
-          <Email>{displayUser?.email}</Email>
+          <Stats>
+            <StatItem>
+              <StatValue>{matches?.length || 0}</StatValue>
+              <StatLabel>Partidas</StatLabel>
+            </StatItem>
+            <StatItem>
+              <StatValue>
+                {displayUser?.friends?.filter(f => f.status === 'accepted')
+                  .length || 0}
+              </StatValue>
+              <StatLabel>Amigos</StatLabel>
+            </StatItem>
+            <StatItem>
+              <StatValue>{displayUser?.games?.length || 0}</StatValue>
+              <StatLabel>Juegos</StatLabel>
+            </StatItem>
+          </Stats>
         </UserInfo>
       </AvatarSection>
-
-      <Stats>
-        <StatItem>
-          <StatValue>{displayUser?.games?.length || 0}</StatValue>
-          <StatLabel>Games</StatLabel>
-        </StatItem>
-        <StatItem>
-          <StatValue>
-            {displayUser?.friends?.filter(f => f.status === 'accepted')
-              .length || 0}
-          </StatValue>
-          <StatLabel>Friends</StatLabel>
-        </StatItem>
-        <StatItem>
-          <StatValue>{matches?.length || 0}</StatValue>
-          <StatLabel>Matches</StatLabel>
-        </StatItem>
-      </Stats>
 
       <Actions>
         <ActionButton onClick={onEditProfile}>
