@@ -97,8 +97,7 @@ export const Stats = styled.div`
   justify-content: space-between;
 `;
 
-export const StatItem = styled.div`
-`;
+export const StatItem = styled.div``;
 
 export const StatValue = styled.div`
   font-size: 1.2rem;
@@ -114,35 +113,32 @@ export const StatLabel = styled.div`
 export const Actions = styled.div`
   display: flex;
   gap: 1rem;
-  justify-content: center;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  justify-content: flex-start;
 `;
 
 export const ActionButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #007bff;
-  color: white;
-  border: none;
+  padding: 0.55rem 1.5rem;
+  background: ${({ $variant }) =>
+    $variant === 'danger' ? 'transparent' : 'var(--color-secondary)'};
+  color: ${({ $variant }) =>
+    $variant === 'danger' ? 'var(--color-danger)' : 'var(--color-white)'};
+  border: ${({ $variant }) =>
+    $variant === 'danger' ? '1px solid var(--color-danger)' : 'none'};
   border-radius: 0.5rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
 
-  &:hover {
-    background: #0056b3;
-  }
-
-  &:nth-child(2) {
-    background: #28a745;
-
+  @media (hover: hover) {
     &:hover {
-      background: #1e7e34;
+      color: var(--color-white);
+      background: ${({ $variant }) =>
+        $variant === 'danger'
+          ? 'var(--color-danger)'
+          : 'var(--color-secondary-hover)'};
     }
   }
 `;

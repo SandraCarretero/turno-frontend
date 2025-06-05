@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Edit, Camera, Loader2 } from 'lucide-react';
+import { UserRoundPen, LogOut, Camera, Loader2 } from 'lucide-react';
 import { userAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -147,15 +147,15 @@ const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
               <StatLabel>Partidas</StatLabel>
             </StatItem>
             <StatItem>
+              <StatValue>{displayUser?.games?.length || 0}</StatValue>
+              <StatLabel>Juegos</StatLabel>
+            </StatItem>
+            <StatItem>
               <StatValue>
                 {displayUser?.friends?.filter(f => f.status === 'accepted')
                   .length || 0}
               </StatValue>
               <StatLabel>Amigos</StatLabel>
-            </StatItem>
-            <StatItem>
-              <StatValue>{displayUser?.games?.length || 0}</StatValue>
-              <StatLabel>Juegos</StatLabel>
             </StatItem>
           </Stats>
         </UserInfo>
@@ -163,17 +163,11 @@ const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
 
       <Actions>
         <ActionButton onClick={onEditProfile}>
-          <Edit size={20} />
+          <UserRoundPen size={20} />
           Edit Profile
         </ActionButton>
-        <ActionButton
-          onClick={() => logout()}
-          style={{
-            border: '1px solid red',
-            background: 'transparent',
-            color: 'red'
-          }}
-        >
+        <ActionButton $variant="danger" onClick={() => logout()}>
+          <LogOut size={20} />
           Log Out
         </ActionButton>
       </Actions>

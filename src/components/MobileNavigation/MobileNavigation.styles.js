@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 
+export const NavigationShade = styled.div`
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(0deg, #fff, transparent);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+`;
+
 export const NavigationContainer = styled.nav`
   width: 90%;
   margin: 0 auto;

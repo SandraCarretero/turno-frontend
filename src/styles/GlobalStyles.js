@@ -4,13 +4,16 @@ const GlobalStyles = createGlobalStyle`
 
 :root{
   --color-primary: #470E5C;
-  --color-primary-hover:rgb(53, 7, 69);
+  --color-primary-transparent:rgba(71, 14, 92, 0.18);
+  --color-primary-hover: #350745;
   --color-secondary: #ff611a;
-  --color-secondary-hover:#d25116;
+  --color-secondary-transparent:rgba(255, 99, 26, 0.18);
+  --color-secondary-hover: #d25116;
   --color-secondary-light: #ffead7;
   --color-primary-dark: #084059;
   --color-dark: #011c25;
    --color-danger: #f3162d;
+   --color-danger-hover:rgb(186, 19, 35);
    --color-background: #f8f9fa;
   --color-white: #ffffff;
   --color-black: #000000;

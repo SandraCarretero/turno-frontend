@@ -26,17 +26,19 @@ const EditProfileModal = ({ onClose }) => {
 
   const handleDeleteAccount = async () => {
     const confirmed = window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.'
+      '¿Estás sseguro de que quieres eliminar la cuenta? Esta acción no se puede deshacer.'
     );
     if (!confirmed) return;
 
     setLoading(true);
     try {
       await userAPI.deleteUser();
-      toast.success('Account deleted successfully');
+      toast.success('Cuenta eliminada con éxito');
       logout();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to delete account');
+      toast.error(
+        error.response?.data?.message || 'Error al eliminar la cuenta'
+      );
     } finally {
       setLoading(false);
     }
@@ -58,10 +60,12 @@ const EditProfileModal = ({ onClose }) => {
     try {
       const response = await userAPI.updateProfile(data);
       updateUser(response.data);
-      toast.success('Profile updated successfully!');
+      toast.success('Perfil actualizado con éxito');
       onClose();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update profile');
+      toast.error(
+        error.response?.data?.message || 'Error al actualizar perfil'
+      );
     } finally {
       setLoading(false);
     }
@@ -71,7 +75,7 @@ const EditProfileModal = ({ onClose }) => {
     <ModalOverlay onClick={onClose}>
       <ModalContainer onClick={e => e.stopPropagation()}>
         <ModalHeader>
-          <ModalTitle>Edit Profile</ModalTitle>
+          <ModalTitle>Editar perfil</ModalTitle>
           <CloseButton onClick={onClose}>
             <X size={20} />
           </CloseButton>
@@ -80,23 +84,23 @@ const EditProfileModal = ({ onClose }) => {
         <ModalBody>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <InputGroup>
-              <Label>Username</Label>
+              <Label>Usuario</Label>
               <Input
                 type="text"
                 {...register('username', {
-                  required: 'Username is required',
+                  required: 'El usuario es requerido',
                   minLength: {
                     value: 3,
-                    message: 'Username must be at least 3 characters'
+                    message: 'El usuario debe tener al menos 3 caracteres'
                   },
                   maxLength: {
                     value: 20,
-                    message: 'Username must be less than 20 characters'
+                    message: 'El usuario no puede tener más de 20 caracteres'
                   },
                   pattern: {
                     value: /^[a-zA-Z0-9_]+$/,
                     message:
-                      'Username can only contain letters, numbers, and underscores'
+                      'El nombre de usuario solo puede contener letras, números y símbolos'
                   }
                 })}
               />
@@ -110,10 +114,10 @@ const EditProfileModal = ({ onClose }) => {
               <Input
                 type="email"
                 {...register('email', {
-                  required: 'Email is required',
+                  required: 'El email es requerido',
                   pattern: {
                     value: /^\S+@\S+$/i,
-                    message: 'Invalid email address'
+                    message: 'Email inválido'
                   }
                 })}
               />
@@ -123,14 +127,19 @@ const EditProfileModal = ({ onClose }) => {
             </InputGroup>
 
             <ModalFooter>
-              <Button type="button" variant="danger" onClick={handleDeleteAccount} disabled={loading}>
-                Delete Account
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Guardando...' : 'Guardar'}
               </Button>
               <Button type="button" variant="secondary" onClick={onClose}>
-                Cancel
+                Cancelar
               </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : 'Save Changes'}
+              <Button
+                type="button"
+                variant="danger"
+                onClick={handleDeleteAccount}
+                disabled={loading}
+              >
+                Eliminar
               </Button>
             </ModalFooter>
           </Form>

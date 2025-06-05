@@ -20,15 +20,21 @@ export const EmptyState = styled.div`
 
 export const FriendsContainer = styled.div`
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 1rem;
   background: white;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const Friends = styled.li`
-  width: max-content;
+  width: 100%;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--color-gray-200);
   display: flex;
   align-items: center;
   gap: 20px;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;

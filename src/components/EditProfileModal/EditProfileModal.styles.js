@@ -96,13 +96,8 @@ export const ErrorMessage = styled.span`
 
 export const ModalFooter = styled.div`
   display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
   margin-top: 1.5rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  justify-content: space-between;
 `;
 
 export const Button = styled.button`
@@ -113,16 +108,16 @@ export const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.2s;
   background: ${props => {
-    if (props.variant === 'secondary') return '#6c757d'; 
-    if (props.variant === 'danger') return '#dc3545';
-    return '#007bff';
+    if (props.variant === 'secondary') return 'var(--color-gray-600)';
+    if (props.variant === 'danger') return 'var(--color-danger)';
+    return 'var(--color-secondary)';
   }};
   color: white;
 
   &:hover:not(:disabled) {
     background: ${props => {
-      if (props.variant === 'secondary') return '#545b62'; 
-      if (props.variant === 'danger') return '#af0c1b'; 
+      if (props.variant === 'secondary') return '#545b62';
+      if (props.variant === 'danger') return '#af0c1b';
       return '#0056b3';
     }};
   }

@@ -11,11 +11,11 @@ import {
 
 const PopularGames = ({ games = [], loading }) => {
   if (loading) {
-    return <LoadingText>Loading games...</LoadingText>;
+    return <LoadingText>Cargando juegos...</LoadingText>;
   }
 
   if (!Array.isArray(games)) {
-    return <LoadingText>No games available</LoadingText>;
+    return <LoadingText>No hay juegos disponibles</LoadingText>;
   }
 
   return (

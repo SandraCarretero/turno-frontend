@@ -28,12 +28,6 @@ const MatchCard = ({ match }) => {
     });
   };
 
-  const formatDuration = minutes => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-  };
-
   return (
     <CardContainer as={Link} to={`/match/${match._id}`}>
       <GameInfo>
@@ -41,37 +35,24 @@ const MatchCard = ({ match }) => {
           src={match.game.image || '/placeholder.svg?height=60&width=60'}
           alt={match.game.name}
         />
-        <GameDetails>
-          <GameTitle>{match.game.name}</GameTitle>
-          <MatchInfo>
-            <InfoItem>
-              <InfoIcon>
-                <Calendar size={14} />
-              </InfoIcon>
-              <InfoText>{formatDate(match.date)}</InfoText>
-            </InfoItem>
-            <InfoItem>
-              <InfoIcon>
-                <Clock size={14} />
-              </InfoIcon>
-              <InfoText>{formatDuration(match.duration)}</InfoText>
-            </InfoItem>
-            <InfoItem>
-              <InfoIcon>
-                <MapPin size={14} />
-              </InfoIcon>
-              <InfoText>{match.location}</InfoText>
-            </InfoItem>
-            <InfoItem>
-              <InfoIcon>
-                <Users size={14} />
-              </InfoIcon>
-              <InfoText>{match.players.length} players</InfoText>
-            </InfoItem>
-          </MatchInfo>
-        </GameDetails>
+        <GameTitle>{match.game.name}</GameTitle>
       </GameInfo>
-      <Players>
+      <GameDetails>
+        <MatchInfo>
+          <InfoItem>
+            <InfoIcon>
+              <Calendar size={14} />
+            </InfoIcon>
+            <InfoText>{formatDate(match.date)}</InfoText>
+          </InfoItem>
+          <InfoItem>
+            <InfoIcon>
+              <Users size={14} />
+            </InfoIcon>
+            <InfoText>{match.players.length} jugadores</InfoText>
+          </InfoItem>
+        </MatchInfo>
+         <Players>
         {match.players.map((player, index) => {
           const isGuest = player.user === null;
           const displayName = isGuest ? player.guestName : player.user.username;
@@ -85,9 +66,6 @@ const MatchCard = ({ match }) => {
               ) : (
                 <UserAvatar user={player.user} size="small" />
               )}
-
-              <PlayerName>{displayName}</PlayerName>
-
               {player.isWinner && (
                 <WinnerBadge>
                   <Trophy size={12} />
@@ -97,6 +75,8 @@ const MatchCard = ({ match }) => {
           );
         })}
       </Players>
+      </GameDetails>
+     
     </CardContainer>
   );
 };

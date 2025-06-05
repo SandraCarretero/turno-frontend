@@ -2,9 +2,9 @@ import { TabContainer, Tab } from './ProfileTabs.styles';
 
 const ProfileTabs = ({ activeTab, onTabChange }) => {
   const tabs = [
-    { id: 'matches', label: 'Matches' },
-    { id: 'games', label: 'Games Collection' },
-    { id: 'friends', label: 'Friends' }
+    { id: 'matches', label: 'Partidas' },
+    { id: 'games', label: 'Juegos' },
+    { id: 'friends', label: 'Amigos' }
   ];
 
   return (

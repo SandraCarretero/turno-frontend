@@ -46,6 +46,7 @@ import {
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
 import GuestSelector from '../../components/GuestSelector/GuestSelector';
 import GuestSyncModal from '../../components/GuestSyncModal/GuestSyncModal';
+import Loader from '../../components/Loader/Loader';
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -78,7 +79,7 @@ const AddMatchPage = ({ editMode = false }) => {
   const [showGuestSelector, setShowGuestSelector] = useState(false);
   const [syncModalGuestId, setSyncModalGuestId] = useState(null);
 
-  const [cooperativeResult, setCooperativeResult] = useState(true); 
+  const [cooperativeResult, setCooperativeResult] = useState(true);
   const [availableTeams] = useState(['Team A', 'Team B', 'Team C', 'Team D']);
 
   const debouncedGameQuery = useDebounce(gameQuery, 800);
@@ -206,11 +207,13 @@ const AddMatchPage = ({ editMode = false }) => {
       } catch (error) {
         if (error.response?.status === 429) {
           setGameSearchError(
-            'Too many requests. Please wait a moment before searching again.'
+            'Demasiadas peticiones, espere un momento antes de volver a buscar'
           );
           throw new Error('Rate limit exceeded');
         }
-        setGameSearchError('Error searching games. Please try again.');
+        setGameSearchError(
+          'Error al buscar juegos, por favor inténtelo de nuevo.'
+        );
         throw error;
       }
     },
@@ -407,16 +410,16 @@ const AddMatchPage = ({ editMode = false }) => {
 
       if (editMode) {
         await matchAPI.updateMatch(matchId, matchData);
-        toast.success('Match updated successfully!');
+        toast.success('Partida modificada con éxito');
       } else {
         await matchAPI.createMatch(matchData);
-        toast.success('Match added successfully!');
+        toast.success('Partida creada con éxito');
       }
 
       navigate('/profile');
     } catch (error) {
       console.error('Error creating match:', error);
-      toast.error(error.response?.data?.message || 'Failed to add match');
+      toast.error(error.response?.data?.message || 'Error al añadir juego');
     } finally {
       setLoading(false);
     }
@@ -425,46 +428,44 @@ const AddMatchPage = ({ editMode = false }) => {
   if (editMode && isLoadingMatch) {
     return (
       <PageContainer>
-        <div>Loading match data...</div>
+        <div>Cargando datos del juego</div>
+        <Loader />
       </PageContainer>
     );
   }
 
   return (
     <PageContainer>
-      <Title>{editMode ? 'Edit Match' : 'Add New Match'}</Title>
+      <Title>{editMode ? 'Editar partida' : 'Crear nueva partida'}</Title>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         {/* Game Selection */}
-        <Section>
-          <SectionTitle>
-            <Search size={20} />
-            Select Game
-          </SectionTitle>
-
+        <>
           {selectedGame ? (
-            <SelectedGame>
-              <GameImage src={selectedGame.image} alt={selectedGame.name} />
-              <GameInfo>
-                <GameName>{selectedGame.name}</GameName>
-                <GameMeta>
-                  {selectedGame.minPlayers}-{selectedGame.maxPlayers} players •{' '}
-                  {selectedGame.playingTime}min
-                </GameMeta>
-              </GameInfo>
+            <>
+              <SelectedGame>
+                <GameImage src={selectedGame.image} alt={selectedGame.name} />
+                <GameInfo>
+                  <GameName>{selectedGame.name}</GameName>
+                  <GameMeta>
+                    {selectedGame.minPlayers}-{selectedGame.maxPlayers} jugadores
+                    • {selectedGame.playingTime}min
+                  </GameMeta>
+                </GameInfo>
+              </SelectedGame>
               <Button
                 type="button"
                 $variant="secondary"
                 onClick={() => setSelectedGame(null)}
               >
-                Change Game
+                Cambiar juego
               </Button>
-            </SelectedGame>
+            </>
           ) : (
             <GameSearchContainer>
               <GameSearchInput
                 type="text"
-                placeholder="Search for a board game... (min 3 characters)"
+                placeholder="Selecciona juego de mesa"
                 value={gameQuery}
                 onChange={e => {
                   setGameQuery(e.target.value);
@@ -476,7 +477,7 @@ const AddMatchPage = ({ editMode = false }) => {
                 <div
                   style={{ padding: '12px', fontSize: '14px', color: '#666' }}
                 >
-                  Searching games...
+                 Buscando juegos...
                 </div>
               )}
 
@@ -507,7 +508,7 @@ const AddMatchPage = ({ editMode = false }) => {
                       <GameInfo>
                         <GameName>{game.name}</GameName>
                         <GameMeta>
-                          {game.minPlayers}-{game.maxPlayers} players •{' '}
+                          {game.minPlayers}-{game.maxPlayers} jugadores •{' '}
                           {game.playingTime}min
                         </GameMeta>
                       </GameInfo>
@@ -523,18 +524,18 @@ const AddMatchPage = ({ editMode = false }) => {
                   <div
                     style={{ padding: '12px', fontSize: '14px', color: '#666' }}
                   >
-                    No games found for "{debouncedGameQuery}"
+                    No hay juegos "{debouncedGameQuery}"
                   </div>
                 )}
             </GameSearchContainer>
           )}
-        </Section>
+        </>
 
         {/* Players */}
         <Section>
           <SectionTitle>
             <Users size={20} />
-            Players
+            Jugadores
           </SectionTitle>
 
           <PlayersSection>
@@ -551,7 +552,7 @@ const AddMatchPage = ({ editMode = false }) => {
                           onClick={() => handleGuestSync(field.guest)}
                           className="text-xs text-blue-600 hover:text-blue-700"
                         >
-                          Sync Guest
+                          Sincronizar
                         </button>
                       )}
                     </div>
@@ -575,12 +576,12 @@ const AddMatchPage = ({ editMode = false }) => {
                   )}
 
                   <InputGroup>
-                    <Label>Score</Label>
+                    <Label>Puntos</Label>
                     <Input
                       type="number"
                       {...register(`players.${index}.score`)}
                       placeholder="0"
-                      style={{ width: '80px' }}
+                      style={{ width: '50px' }}
                     />
                   </InputGroup>
 
@@ -592,7 +593,7 @@ const AddMatchPage = ({ editMode = false }) => {
                         id={`winner-${index}`}
                       />
                       <CheckboxLabel htmlFor={`winner-${index}`}>
-                        Winner
+                        Ganadaor
                       </CheckboxLabel>
                     </CheckboxGroup>
                   )}
@@ -745,7 +746,7 @@ const AddMatchPage = ({ editMode = false }) => {
             <AddPlayerContainer>
               <PlayerSearchInput
                 type="text"
-                placeholder="Search for registered players..."
+                placeholder="Buscar usuarios..."
                 value={playerQuery}
                 onChange={e => setPlayerQuery(e.target.value)}
               />
@@ -769,15 +770,9 @@ const AddMatchPage = ({ editMode = false }) => {
                   onClick={() => setShowGuestSelector(true)}
                   $variant="secondary"
                 >
-                  Add Saved Guest
+                  Añadir un invitado
                 </Button>
-                <Button
-                  type="button"
-                  onClick={() => setShowGuestInput(prev => !prev)}
-                  $variant="secondary"
-                >
-                  {showGuestInput ? 'Cancel' : 'Add Quick Guest'}
-                </Button>
+                
               </div>
 
               {showGuestInput && (

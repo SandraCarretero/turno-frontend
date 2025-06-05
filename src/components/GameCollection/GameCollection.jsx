@@ -17,8 +17,7 @@ const GameCollection = ({ games }) => {
   if (!games || games.length === 0) {
     return (
       <EmptyState>
-        <h3>No games in collection</h3>
-        <p>Start building your board game collection!</p>
+        <h3>No hay juegos en la colección</h3>
       </EmptyState>
     )
   }

@@ -1,14 +1,20 @@
-import { useState } from "react"
-import { useParams, Link } from "react-router-dom"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { gameAPI, matchAPI } from "../../services/api"
-import { useAuth } from "../../context/AuthContext"
-import { ArrowLeft, Plus, Users, Clock, Star, TrendingUp, Calendar, Trophy } from "lucide-react"
-import MatchCard from "../../components/MatchCard/MatchCard"
-import toast from "react-hot-toast"
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { gameAPI, matchAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import {
+  Minus,
+  Plus,
+  Users,
+  Clock,
+  Star,
+  TrendingUp,
+  Calendar
+} from 'lucide-react';
+import toast from 'react-hot-toast';
 import {
   PageContainer,
-  BackButton,
   GameHeader,
   GameImage,
   GameInfo,
@@ -25,72 +31,75 @@ import {
   ActionButton,
   Section,
   SectionTitle,
-  MatchesList,
   LoadingText,
   ErrorMessage,
-  EmptyMatches,
   GameCategories,
   Category,
   GameMechanics,
-  Mechanic,
-} from "./GameDetailPage.styles"
+  Mechanic
+} from './GameDetailPage.styles';
+import Loader from '../../components/Loader/Loader';
 
 const GameDetailPage = () => {
-  const { gameId } = useParams()
-  const { user } = useAuth()
-  const queryClient = useQueryClient()
-  const [isInCollection, setIsInCollection] = useState(false)
+  const { gameId } = useParams();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [isInCollection, setIsInCollection] = useState(false);
 
   const {
     data: game,
     isLoading: gameLoading,
-    error: gameError,
+    error: gameError
   } = useQuery({
-    queryKey: ["gameDetails", gameId],
+    queryKey: ['gameDetails', gameId],
     queryFn: () => gameAPI.getGameDetails(gameId),
-    onSuccess: (gameData) => {
-      const inCollection = user?.games?.some((g) => g.bggId === gameData.bggId)
-      setIsInCollection(inCollection)
-    },
-  })
+    onSuccess: gameData => {
+      const inCollection = user?.games?.some(g => g.bggId === gameData.bggId);
+      setIsInCollection(inCollection);
+    }
+  });
 
   const { data: matchesData, isLoading: matchesLoading } = useQuery({
-    queryKey: ["gameMatches", gameId],
+    queryKey: ['gameMatches', gameId],
     queryFn: () =>
-      matchAPI.getMatchesByGameId ? matchAPI.getMatchesByGameId(gameId) : Promise.resolve({ matches: [] }),
-    enabled: !!gameId,
-  })
-  console.log("gameId:", gameId)
+      matchAPI.getMatchesByGameId
+        ? matchAPI.getMatchesByGameId(gameId)
+        : Promise.resolve({ matches: [] }),
+    enabled: !!gameId
+  });
+  console.log('gameId:', gameId);
 
   const addToCollectionMutation = useMutation({
     mutationFn: gameAPI.addGameToCollection,
     onSuccess: () => {
-      setIsInCollection(true)
-      queryClient.invalidateQueries(["userProfile"])
-      toast.success("Game added to collection!")
+      setIsInCollection(true);
+      queryClient.invalidateQueries(['userProfile']);
+      toast.success('Game added to collection!');
     },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to add game")
-    },
-  })
+    onError: error => {
+      toast.error(error.response?.data?.message || 'Error al añadir un juego');
+    }
+  });
 
   const removeFromCollectionMutation = useMutation({
     mutationFn: gameAPI.removeGameFromCollection,
     onSuccess: () => {
-      setIsInCollection(false)
-      queryClient.invalidateQueries(["userProfile"])
-      toast.success("Game removed from collection!")
+      setIsInCollection(false);
+      queryClient.invalidateQueries(['userProfile']);
+      toast.success('Juego eliminado de la colección!');
     },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to remove game")
-    },
-  })
+    onError: error => {
+      toast.error(
+        error.response?.data?.message || 'Error al eliminar el juego'
+      );
+    }
+  });
 
   const handleToggleCollection = () => {
-    if (!game) return
+    if (!game) return;
 
     if (isInCollection) {
-      removeFromCollectionMutation.mutate(game.bggId)
+      removeFromCollectionMutation.mutate(game.bggId);
     } else {
       addToCollectionMutation.mutate({
         bggId: game.bggId,
@@ -98,36 +107,32 @@ const GameDetailPage = () => {
         image: game.image,
         minPlayers: game.minPlayers,
         maxPlayers: game.maxPlayers,
-        playingTime: game.playingTime,
-      })
+        playingTime: game.playingTime
+      });
     }
-  }
+  };
 
   if (gameLoading) {
     return (
       <PageContainer>
-        <LoadingText>Loading game details...</LoadingText>
+        <LoadingText>Cargando detalles del juego...</LoadingText>
+        <Loader />
       </PageContainer>
-    )
+    );
   }
 
   if (gameError || !game) {
     return (
       <PageContainer>
-        <ErrorMessage>Failed to load game details</ErrorMessage>
+        <ErrorMessage>Error al cargar detalles del juego</ErrorMessage>
       </PageContainer>
-    )
+    );
   }
 
-  const matches = matchesData?.matches || []
+  const matches = matchesData?.matches || [];
 
   return (
     <PageContainer>
-      <BackButton as={Link} to="/">
-        <ArrowLeft size={20} />
-        Back to Home
-      </BackButton>
-
       <GameHeader>
         <GameImage src={game.image} alt={game.name} />
         <GameInfo>
@@ -135,11 +140,11 @@ const GameDetailPage = () => {
           <GameMeta>
             <MetaItem>
               <Users size={16} />
-              {game.minPlayers}-{game.maxPlayers} players
+              {game.minPlayers}-{game.maxPlayers} jugadores
             </MetaItem>
             <MetaItem>
               <Clock size={16} />
-              {game.playingTime} minutes
+              {game.playingTime} minutos
             </MetaItem>
             <MetaItem>
               <Calendar size={16} />
@@ -152,49 +157,50 @@ const GameDetailPage = () => {
               </MetaItem>
             )}
           </GameMeta>
-
-          {game.description && (
-            <GameDescription
-              dangerouslySetInnerHTML={{
-                __html: game.description.replace(/&[^;]+;/g, "").substring(0, 300) + "...",
-              }}
-            />
-          )}
-
-          <ActionButtons>
-            <ActionButton
-              onClick={handleToggleCollection}
-              disabled={addToCollectionMutation.isLoading || removeFromCollectionMutation.isLoading}
-              variant={isInCollection ? "secondary" : "primary"}
-            >
-              <Plus size={16} />
-              {isInCollection ? "Remove from Collection" : "Add to Collection"}
-            </ActionButton>
-            <ActionButton as={Link} to="/add-match" state={{ selectedGame: game }}>
-              <Trophy size={16} />
-              Log a Match
-            </ActionButton>
-          </ActionButtons>
         </GameInfo>
       </GameHeader>
+      {game.description && (
+        <GameDescription
+          dangerouslySetInnerHTML={{
+            __html:
+              game.description.replace(/&[^;]+;/g, '').substring(0, 300) + '...'
+          }}
+        />
+      )}
+
+      <ActionButtons>
+        <ActionButton
+          onClick={handleToggleCollection}
+          disabled={
+            addToCollectionMutation.isLoading ||
+            removeFromCollectionMutation.isLoading
+          }
+          variant={isInCollection ? 'secondary' : 'primary'}
+        >
+          {isInCollection ? <Minus size={16} /> : <Plus size={16} />}
+          {isInCollection ? 'Remove from Collection' : 'Add to Collection'}
+        </ActionButton>
+      </ActionButtons>
 
       <GameStats>
         <StatCard>
-          <StatIcon color="#007bff">
+          <StatIcon color="#FF611A">
             <Users size={24} />
           </StatIcon>
           <StatValue>
-            {game.minPlayers === game.maxPlayers ? game.minPlayers : `${game.minPlayers}-${game.maxPlayers}`}
+            {game.minPlayers === game.maxPlayers
+              ? game.minPlayers
+              : `${game.minPlayers}-${game.maxPlayers}`}
           </StatValue>
-          <StatLabel>Players</StatLabel>
+          <StatLabel>Jugadores</StatLabel>
         </StatCard>
 
         <StatCard>
-          <StatIcon color="#28a745">
+          <StatIcon color="#D9B8E6">
             <Clock size={24} />
           </StatIcon>
           <StatValue>{game.playingTime}</StatValue>
-          <StatLabel>Minutes</StatLabel>
+          <StatLabel>Minutos</StatLabel>
         </StatCard>
 
         {game.rating > 0 && (
@@ -203,24 +209,24 @@ const GameDetailPage = () => {
               <Star size={24} />
             </StatIcon>
             <StatValue>{game.rating.toFixed(1)}</StatValue>
-            <StatLabel>BGG Rating</StatLabel>
+            <StatLabel>Valoración BGG</StatLabel>
           </StatCard>
         )}
 
         {game.complexity > 0 && (
           <StatCard>
-            <StatIcon color="#6f42c1">
+            <StatIcon color="#1AB3A6">
               <TrendingUp size={24} />
             </StatIcon>
             <StatValue>{game.complexity.toFixed(1)}</StatValue>
-            <StatLabel>Complexity</StatLabel>
+            <StatLabel>Complejidad</StatLabel>
           </StatCard>
         )}
       </GameStats>
 
       {game.categories && game.categories.length > 0 && (
         <Section>
-          <SectionTitle>Categories</SectionTitle>
+          <SectionTitle>Categorías</SectionTitle>
           <GameCategories>
             {game.categories.slice(0, 8).map((category, index) => (
               <Category key={index}>{category}</Category>
@@ -231,7 +237,7 @@ const GameDetailPage = () => {
 
       {game.mechanics && game.mechanics.length > 0 && (
         <Section>
-          <SectionTitle>Mechanics</SectionTitle>
+          <SectionTitle>Mecánicas</SectionTitle>
           <GameMechanics>
             {game.mechanics.slice(0, 8).map((mechanic, index) => (
               <Mechanic key={index}>{mechanic}</Mechanic>
@@ -239,9 +245,8 @@ const GameDetailPage = () => {
           </GameMechanics>
         </Section>
       )}
-
     </PageContainer>
-  )
-}
+  );
+};
 
-export default GameDetailPage
+export default GameDetailPage;

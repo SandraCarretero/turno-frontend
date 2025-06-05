@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components';
 
 export const CardContainer = styled.div`
   background: white;
@@ -13,13 +13,14 @@ export const CardContainer = styled.div`
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
-`
+`;
 
 export const GameInfo = styled.div`
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-`
+  align-items: center;
+`;
 
 export const GameImage = styled.img`
   width: 60px;
@@ -27,12 +28,13 @@ export const GameImage = styled.img`
   border-radius: 0.5rem;
   object-fit: cover;
   flex-shrink: 0;
-`
+`;
 
 export const GameDetails = styled.div`
-  flex: 1;
-  min-width: 0;
-`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 export const GameTitle = styled.h3`
   font-size: 1.1rem;
@@ -40,29 +42,24 @@ export const GameTitle = styled.h3`
   color: #333;
   margin: 0 0 0.5rem 0;
   line-height: 1.3;
-`
+`;
 
 export const MatchInfo = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-`
+  display: flex;
+  flex-direction: column;
+`;
 
 export const InfoItem = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-`
+`;
 
 export const InfoIcon = styled.div`
   color: #6c757d;
   display: flex;
   align-items: center;
-`
+`;
 
 export const InfoText = styled.span`
   font-size: 0.875rem;
@@ -70,33 +67,33 @@ export const InfoText = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
+`;
 
 export const Players = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-`
+  gap: 3px;
+`;
 
 export const Player = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   position: relative;
-`
+`;
 
 export const PlayerAvatar = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-`
+`;
 
 export const PlayerName = styled.span`
   font-size: 0.875rem;
   color: #333;
   font-weight: 500;
-`
+`;
 
 export const WinnerBadge = styled.div`
   background: #ffc107;
@@ -110,4 +107,5 @@ export const WinnerBadge = styled.div`
   position: absolute;
   top: -5px;
   left: 20px;
-`
+  z-index: 1;
+`;
