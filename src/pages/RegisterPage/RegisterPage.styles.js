@@ -1,48 +1,54 @@
-import styled from "styled-components"
+import styled from 'styled-components';
 
 export const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 1rem;
-`
+  background: radial-gradient(circle at 20% 30%, #ffd56f 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, #ff8a80 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, #64b5f6 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, #9575cd 0%, transparent 50%);
+  background-color: #c5e3ff9c;
+  background-blend-mode: screen;
+`;
 
 export const FormContainer = styled.div`
-  background: white;
+  background: var(--color-white);
   padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem 1rem 0 0;
   width: 100%;
   max-width: 400px;
-`
+  min-height: 80dvh;
+  display: flex;
+  flex-direction: column;
+`;
 
 export const Title = styled.h1`
   text-align: center;
   margin-bottom: 2rem;
-  color: #333;
+  color: var(--color-primary-dark);
   font-size: 1.75rem;
-  font-weight: 600;
-`
+  font-weight: 700;
+`;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-`
+  gap: 0.8rem;
+`;
 
 export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-`
+`;
 
 export const Label = styled.label`
   font-weight: 500;
-  color: #333;
+  color: var(--color-dark);
   font-size: 0.9rem;
-`
+`;
 
 export const Input = styled.input`
   padding: 0.75rem;
@@ -53,18 +59,18 @@ export const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
   }
 
   &::placeholder {
-    color: #6c757d;
+    color: var(--color-gray-600);
   }
-`
+`;
 
 export const Button = styled.button`
   padding: 0.75rem;
-  background: #007bff;
+  background: var(--color-secondary);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -74,22 +80,22 @@ export const Button = styled.button`
   transition: background-color 0.2s;
 
   &:hover:not(:disabled) {
-    background: #0056b3;
+    background: var(--color-secondary-hover);
   }
 
   &:disabled {
-    background: #6c757d;
+    background: var(--color-gray-600);
     cursor: not-allowed;
   }
-`
+`;
 
 export const LinkText = styled.p`
   text-align: center;
   margin-top: 1.5rem;
-  color: #6c757d;
+  color: var(--color-gray-600);
 
   a {
-    color: #007bff;
+    color: var(--color-primary);
     text-decoration: none;
     font-weight: 500;
 
@@ -97,10 +103,10 @@ export const LinkText = styled.p`
       text-decoration: underline;
     }
   }
-`
+`;
 
 export const ErrorMessage = styled.span`
-  color: #dc3545;
+  color: var(--color-danger);
   font-size: 0.875rem;
   margin-top: 0.25rem;
-`
+`;

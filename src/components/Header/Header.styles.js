@@ -1,5 +1,5 @@
-import styled from "styled-components"
-import { Link } from "react-router-dom"
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const HeaderContainer = styled.header`
   display: flex;
@@ -19,24 +19,26 @@ export const HeaderContainer = styled.header`
     right: 0;
     z-index: 1000;
   }
-`
+`;
 
 export const Logo = styled(Link)`
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  color: #007bff;
+  color: var(--color-secondary);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+`;
 
-  &:hover {
-    color: #0056b3;
-  }
-`
+export const LogoImg = styled.img`
+  width: 18px;
+`;
 
 export const HeaderActions = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-`
+`;
 
 export const NotificationButton = styled.button`
   position: relative;
@@ -49,15 +51,15 @@ export const NotificationButton = styled.button`
 
   &:hover {
     background: #f8f9fa;
-    color: #007bff;
+    color: var(--color-primary);
   }
-`
+`;
 
 export const NotificationBadge = styled.span`
   position: absolute;
   top: 0;
   right: 0;
-  background: #dc3545;
+  background: var(--color-secondary);
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -67,7 +69,7 @@ export const NotificationBadge = styled.span`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-`
+`;
 
 export const UserAvatar = styled.img`
   width: 32px;
@@ -75,8 +77,4 @@ export const UserAvatar = styled.img`
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #e9ecef;
-
-  &:hover {
-    border-color: #007bff;
-  }
-`
+`;

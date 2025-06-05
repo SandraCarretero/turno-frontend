@@ -37,7 +37,7 @@ const RegisterPage = () => {
     try {
       await registerUser(data);
       toast.success(
-        'Account created successfully! Please check your email for verification.'
+        'Cuenta creada correctamente! Por favor revisa el correo'
       );
       navigate('/');
     } catch (error) {
@@ -54,7 +54,7 @@ const RegisterPage = () => {
         setServerErrors(formatted);
       } else if (
         error.response?.data?.message &&
-        error.response.data.message.includes('usuario ya en uso')
+        error.response.data.message.includes('Usuario ya en uso')
       ) {
         setServerErrors({ username: 'Nombre de usuario ya en uso' });
       } else if (
@@ -63,7 +63,7 @@ const RegisterPage = () => {
       ) {
         setServerErrors({ email: 'Email ya registrado' });
       } else {
-        toast.error(error.response?.data?.message || 'Registration failed');
+        toast.error(error.response?.data?.message || 'Fallo al registrarte');
       }
     } finally {
       setLoading(false);
@@ -81,22 +81,22 @@ const RegisterPage = () => {
             <Input
               type="text"
               {...register('username', {
-                required: 'Username is required',
+                required: 'Nombre de usuario es requerido',
                 minLength: {
                   value: 3,
-                  message: 'Username must be at least 3 characters'
+                  message: 'El nombre de usuario debe tener al menos 3 letras'
                 },
                 maxLength: {
                   value: 20,
-                  message: 'Username must be less than 20 characters'
+                  message: 'El nombre de usuario debe tener menos de 20 letras'
                 },
                 pattern: {
                   value: /^[a-zA-Z0-9_]+$/,
                   message:
-                    'Username can only contain letters, numbers, and underscores'
+                    'El nombre de usuario solo puede tener letras, números y símbolos'
                 }
               })}
-              placeholder="Choose a username"
+              placeholder="Introduce un nombre de usuario"
             />
             {(errors.username || serverErrors.username) && (
               <ErrorMessage>
@@ -110,13 +110,13 @@ const RegisterPage = () => {
             <Input
               type="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'El email es requerido',
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: 'Invalid email address'
+                  message: 'Email inválido'
                 }
               })}
-              placeholder="Enter your email"
+              placeholder="Introduce tu email"
             />
             {(errors.email || serverErrors.email) && (
               <ErrorMessage>
@@ -126,17 +126,17 @@ const RegisterPage = () => {
           </InputGroup>
 
           <InputGroup>
-            <Label>Password</Label>
+            <Label>Contraseña</Label>
             <Input
               type="password"
               {...register('password', {
-                required: 'Password is required',
+                required: 'La contraseña es requerida',
                 minLength: {
                   value: 6,
-                  message: 'Password must be at least 6 characters'
+                  message: 'La contraseña debe tener al menos 6 caracteres'
                 }
               })}
-              placeholder="Create a password"
+              placeholder="Introduce una contraseña"
             />
             {(errors.password || serverErrors.password) && (
               <ErrorMessage>
@@ -146,13 +146,13 @@ const RegisterPage = () => {
           </InputGroup>
 
           <InputGroup>
-            <Label>Confirm Password</Label>
+            <Label>Confirma contraseña</Label>
             <Input
               type="password"
               {...register('confirmPassword', {
-                required: 'Please confirm your password',
+                required: 'Por favor confirma tu contraseña',
                 validate: value =>
-                  value === password || 'Passwords do not match'
+                  value === password || 'Las contraseñas no coinciden'
               })}
               placeholder="Confirm your password"
             />
@@ -162,12 +162,12 @@ const RegisterPage = () => {
           </InputGroup>
 
           <Button type="submit" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
           </Button>
         </Form>
 
         <LinkText>
-          Already have an account? <Link to="/login">Sign in here</Link>
+          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
         </LinkText>
       </FormContainer>
     </PageContainer>

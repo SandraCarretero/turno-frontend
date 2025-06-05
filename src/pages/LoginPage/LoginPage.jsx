@@ -31,10 +31,10 @@ const LoginPage = () => {
     setLoading(true);
     try {
       await login(data);
-      toast.success('Welcome back!');
+      toast.success('Bienvenido!');
       navigate('/');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error(error.response?.data?.message || 'Fallo al iniciar sesión');
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ const LoginPage = () => {
   return (
     <PageContainer>
       <FormContainer>
-        <Title>Welcome to Boardify</Title>
+        <Title>Bienvenido de nuevo</Title>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>
@@ -51,13 +51,13 @@ const LoginPage = () => {
             <Input
               type="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'El email es requerido',
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: 'Invalid email address'
+                  message: 'Email inválido'
                 }
               })}
-              placeholder="Enter your email"
+              placeholder="Introduce tu email"
             />
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -65,17 +65,17 @@ const LoginPage = () => {
           </InputGroup>
 
           <InputGroup>
-            <Label>Password</Label>
+            <Label>Contraseña</Label>
             <Input
               type="password"
               {...register('password', {
-                required: 'Password is required',
+                required: 'La contraseña es requerida',
                 minLength: {
                   value: 6,
-                  message: 'Password must be at least 6 characters'
+                  message: 'Contraseña inválida'
                 }
               })}
-              placeholder="Enter your password"
+              placeholder="Introduce tu contraseña"
             />
             {errors.password && (
               <ErrorMessage>{errors.password.message}</ErrorMessage>
@@ -83,13 +83,13 @@ const LoginPage = () => {
           </InputGroup>
 
           <Button type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Entrando...' : 'Iniciar sesión'}
           </Button>
         </Form>
 
         <LinkText>
-          {"Don't have an account? "}
-          <Link to="/register">Sign up here</Link>
+          {"¿No tienes cuenta aún? "}
+          <Link to="/register">Regístrate aquí</Link>
         </LinkText>
       </FormContainer>
     </PageContainer>

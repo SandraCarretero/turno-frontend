@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom"
 import { Bell } from "lucide-react"
 import { useAuth } from "../../context/AuthContext"
 import { useSocket } from "../../context/SocketContext"
-import { HeaderContainer, Logo, HeaderActions, NotificationButton, NotificationBadge } from "./Header.styles"
+import { HeaderContainer, Logo, LogoImg, HeaderActions, NotificationButton, NotificationBadge } from "./Header.styles"
 import UserAvatar from "../UserAvatar/UserAvatar"
 import { useEffect } from "react"
 
@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Logo to="/">Boardify</Logo>
+      <Logo to="/">Turn <LogoImg src="https://res.cloudinary.com/djxnoeo6v/image/upload/v1749126412/favicon_jb1f5w.svg"/></Logo>
 
       <HeaderActions>
         <Link to="/notifications">

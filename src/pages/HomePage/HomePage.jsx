@@ -17,7 +17,7 @@ const HomePage = () => {
   return (
     <PageContainer>
       <Section>
-        <SectionTitle>Popular Games</SectionTitle>
+        <SectionTitle>Top juegos</SectionTitle>
         <PopularGames games={popularGames} loading={gamesLoading} />
       </Section>
 

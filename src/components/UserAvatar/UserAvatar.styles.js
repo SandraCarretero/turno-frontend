@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const AvatarImage = styled.img`
   width: ${props =>
-    props.$size === 'small' ? '30px' : props.$size === 'big' ? '80px' : '50px'};
+    props.$size === 'small' ? '45px' : props.$size === 'big' ? '80px' : '50px'};
   aspect-ratio: 1;
   border-radius: 50%;
   object-fit: cover;

@@ -1,6 +1,29 @@
-import { createGlobalStyle } from "styled-components"
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
+
+:root{
+  --color-primary: #26c8b9;
+  --color-secondary: #ff611a;
+  --color-secondary-hover:#d25116;
+  --color-secondary-light: #ffead7;
+  --color-primary-dark: #084059;
+  --color-dark: #011c25;
+   --color-danger: #f3162d;
+   --color-background: #f8f9fa;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+}
+
   * {
     margin: 0;
     padding: 0;
@@ -8,18 +31,22 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: "Inter", sans-serif;;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #f8f9fa;
-    color: #333;
+    color: var(--color-dark);
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100dvw;
   }
 
-  #root {
-    min-height: 100vh;
+  #root{
+    width: 100dvw;
   }
 
   a {
@@ -60,6 +87,6 @@ const GlobalStyles = createGlobalStyle`
       padding: 0 0.5rem;
     }
   }
-`
+`;
 
-export default GlobalStyles
+export default GlobalStyles;

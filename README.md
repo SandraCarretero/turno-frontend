@@ -8,7 +8,7 @@
 
 El frontend está desarrollado en **React** con una arquitectura basada en componentes, usando Redux para el estado global y React Router para la navegación. El diseño es **responsive y mobile-first**, con estilos implementados mediante **styled-components**.
 
-🔗 **[Ver demo online](https://taskplannerpro-vcq0.onrender.com/)**
+🔗 **[Ver demo online](https://turno-frontend.vercel.app/login)**
 
 ---
 
@@ -17,11 +17,10 @@ El frontend está desarrollado en **React** con una arquitectura basada en compo
 🎮 **Partidas**
 - Registro de partidas jugadas (fecha, jugadores, duración, puntuaciones)
 - Visualización de partidas anteriores
-- Estadísticas por juego y por jugador
+- Estadísticas personales
 
 👥 **Usuarios**
 - Registro, login y gestión de cuenta
-- Roles (admin o usuario)
 - Avatares personalizados
 - Lista de amigos
 
@@ -36,7 +35,7 @@ El frontend está desarrollado en **React** con una arquitectura basada en compo
 - Consulta y búsqueda usando la API de [BoardGameGeek](https://boardgamegeek.com/xmlapi2)
 
 📊 **Dashboard**
-- Gráficos y métricas sobre tus partidas jugadas, duración media, juegos favoritos, jugadores frecuentes, etc.
+- Gráficos y métricas sobre todas tus partidas jugadas, win rate, juegos del mes, jugadores frecuentes, etc.
 
 ---
 
@@ -61,23 +60,6 @@ El frontend está desarrollado en **React** con una arquitectura basada en compo
 [![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)](https://jwt.io/)
 
 ---
-
-## Instalación 🚀
-
-
-```bash
-# Clona el repositorio
-git clone https://github.com/tuusuario/flowgame.git
-
-# Entra en el frontend
-cd frontend
-
-# Instala las dependencias
-npm install
-
-# Ejecuta el proyecto
-npm run dev
-```
 
 ## Autor ✒️
 
