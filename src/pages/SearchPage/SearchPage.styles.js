@@ -1,15 +1,15 @@
-import styled from "styled-components"
+import styled from 'styled-components';
 
 export const PageContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
   min-height: calc(100vh - 140px);
-`
+`;
 
 export const Header = styled.div`
   margin-bottom: 2rem;
-`
+`;
 
 export const Title = styled.h1`
   display: flex;
@@ -23,7 +23,7 @@ export const Title = styled.h1`
   @media (max-width: 768px) {
     font-size: 1.5rem;
   }
-`
+`;
 
 export const SearchContainer = styled.div`
   background: white;
@@ -31,7 +31,7 @@ export const SearchContainer = styled.div`
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
-`
+`;
 
 export const SearchTypeToggle = styled.div`
   display: flex;
@@ -40,12 +40,9 @@ export const SearchTypeToggle = styled.div`
   padding: 0.25rem;
   margin-bottom: 1.5rem;
   gap: 0.25rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-`
+  flex-direction: row;
+  gap: 0.5rem;
+`;
 
 export const ToggleButton = styled.button`
   flex: 1;
@@ -59,19 +56,19 @@ export const ToggleButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  
-  background: ${(props) => (props.$active ? "#007bff" : "transparent")};
-  color: ${(props) => (props.$active ? "white" : "#6c757d")};
+
+  background: ${props => (props.$active ? 'var(--color-primary)' : 'transparent')};
+  color: ${props => (props.$active ? 'white' : '#6c757d')};
 
   &:hover {
-    background: ${(props) => (props.$active ? "#0056b3" : "#e9ecef")};
-    color: ${(props) => (props.$active ? "white" : "#007bff")};
+    background: ${props => (props.$active ? 'var(--color-primary-hover)' : '#e9ecef')};
+    color: ${props => (props.$active ? 'white' : 'var(--color-gray-800)')};
   }
-`
+`;
 
 export const SearchInputContainer = styled.div`
   position: relative;
-`
+`;
 
 export const SearchInput = styled.input`
   width: 100%;
@@ -84,15 +81,14 @@ export const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--color-primary);
     background: white;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
   }
 
   &::placeholder {
     color: #6c757d;
   }
-`
+`;
 
 export const ClearButton = styled.button`
   position: absolute;
@@ -114,7 +110,7 @@ export const ClearButton = styled.button`
   &:hover {
     background: #495057;
   }
-`
+`;
 
 export const ResultsContainer = styled.div`
   background: white;
@@ -122,24 +118,24 @@ export const ResultsContainer = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-height: 300px;
   overflow: hidden;
-`
+`;
 
 export const ResultsHeader = styled.div`
   padding: 1.5rem;
   border-bottom: 1px solid #f8f9fa;
-`
+`;
 
 export const ResultsCount = styled.h3`
   font-size: 1rem;
   font-weight: 500;
   color: #6c757d;
   margin: 0;
-`
+`;
 
 export const ResultsList = styled.div`
   max-height: 500px;
   overflow-y: auto;
-`
+`;
 
 export const ResultItem = styled.div`
   display: flex;
@@ -157,7 +153,7 @@ export const ResultItem = styled.div`
   &:last-child {
     border-bottom: none;
   }
-`
+`;
 
 export const ResultImage = styled.img`
   width: 50px;
@@ -166,21 +162,20 @@ export const ResultImage = styled.img`
   object-fit: cover;
   flex-shrink: 0;
   border: 1px solid #e9ecef;
-`
+`;
 
 export const ResultInfo = styled.div`
   flex: 1;
   min-width: 0;
-`
+`;
 
 export const ResultTitle = styled.div`
   font-weight: 600;
   color: #333;
-  margin-bottom: 0.25rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
+`;
 
 export const ResultSubtitle = styled.div`
   font-size: 0.875rem;
@@ -188,7 +183,7 @@ export const ResultSubtitle = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
+`;
 
 export const LoadingText = styled.div`
   text-align: center;
@@ -196,25 +191,25 @@ export const LoadingText = styled.div`
   font-style: italic;
   padding: 3rem;
   font-size: 1.1rem;
-`
+`;
 
 export const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
   color: #6c757d;
-`
+`;
 
 export const EmptyIcon = styled.div`
   margin-bottom: 1.5rem;
   opacity: 0.5;
-`
+`;
 
 export const EmptyTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
   color: #333;
   margin-bottom: 0.5rem;
-`
+`;
 
 export const EmptyDescription = styled.p`
   font-size: 1rem;
@@ -222,4 +217,4 @@ export const EmptyDescription = styled.p`
   margin: 0;
   max-width: 400px;
   margin: 0 auto;
-`
+`;

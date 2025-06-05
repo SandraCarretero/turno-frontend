@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Search, Users, Gamepad2, X } from 'lucide-react';
+import { Search, Users, Dices, X } from 'lucide-react';
 import { userAPI, gameAPI } from '../../services/api';
 import {
   PageContainer,
@@ -82,6 +82,11 @@ const SearchPage = () => {
   const hasQuery = debouncedQuery.length >= 2;
   const hasResults = results.length > 0;
 
+  const searchTypeLabels = {
+  users: 'usuarios',
+  games: 'juegos',
+};
+
   return (
     <PageContainer>
       <Header>
@@ -98,21 +103,21 @@ const SearchPage = () => {
             onClick={() => setSearchType('users')}
           >
             <Users size={16} />
-            Users
+            Usuarios
           </ToggleButton>
           <ToggleButton
             $active={searchType === 'games'}
             onClick={() => setSearchType('games')}
           >
-            <Gamepad2 size={16} />
-            Games
+            <Dices size={16} />
+            Juegos
           </ToggleButton>
         </SearchTypeToggle>
 
         <SearchInputContainer>
           <SearchInput
             type="text"
-            placeholder={`Search for ${searchType}...`}
+            placeholder={`Buscar ${searchTypeLabels[searchType]}...`}
             value={query}
             onChange={e => setQuery(e.target.value)}
             autoFocus
@@ -132,24 +137,19 @@ const SearchPage = () => {
               {searchType === 'users' ? (
                 <Users size={48} />
               ) : (
-                <Gamepad2 size={48} />
+                <Dices size={48} />
               )}
             </EmptyIcon>
-            <EmptyTitle>Start searching</EmptyTitle>
+            <EmptyTitle>Empieza a buscar</EmptyTitle>
             <EmptyDescription>
-              Type at least 2 characters to search for{' '}
-              {searchType === 'users' ? 'users' : 'board games'}
+              Escribe al menos 2 caracteres para buscar {' '}
+               {searchTypeLabels[searchType]}
             </EmptyDescription>
           </EmptyState>
         ) : isLoading ? (
-          <LoadingText>Searching {searchType}...</LoadingText>
+          <LoadingText>Buscando {searchTypeLabels[searchType]}...</LoadingText>
         ) : hasResults ? (
           <>
-            <ResultsHeader>
-              <ResultsCount>
-                Found {results.length} {searchType} for "{debouncedQuery}"
-              </ResultsCount>
-            </ResultsHeader>
             <ResultsList>
               {results.map(result => (
                 <ResultItem

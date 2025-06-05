@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { gameAPI } from "../../services/api"
 import PopularGames from "../../components/PopularGames/PopularGames"
 import { PageContainer, Section, SectionTitle } from "./HomePage.styles"
+import BestsellerGames from "../../components/BestsellerGames/BestsellerGames"
 
 const HomePage = () => {
   const { data: popularGames = [], isLoading: gamesLoading } = useQuery({
@@ -23,7 +24,7 @@ const HomePage = () => {
 
       <Section>
         <SectionTitle>Bestsellers</SectionTitle>
-        <PopularGames games={bestsellers} loading={bestsellersLoading}/>
+        <BestsellerGames games={bestsellers} loading={bestsellersLoading}/>
       </Section>
     </PageContainer>
   )

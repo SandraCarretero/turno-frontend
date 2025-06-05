@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Logo to="/">Turn <LogoImg src="https://res.cloudinary.com/djxnoeo6v/image/upload/v1749126412/favicon_jb1f5w.svg"/></Logo>
+      <Logo to="/">Turn <LogoImg src="https://res.cloudinary.com/djxnoeo6v/image/upload/v1749129757/favicon_fgdjdv.svg"/></Logo>
 
       <HeaderActions>
         <Link to="/notifications">
