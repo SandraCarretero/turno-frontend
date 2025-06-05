@@ -6,7 +6,7 @@ const FriendsList = ({ friends }) => {
   if (!friends || friends.length === 0) {
     return (
       <EmptyState>
-        <h3>No friends yet</h3>
+        <h3>No has añadido amigos aún</h3>
       </EmptyState>
     );
   }

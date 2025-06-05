@@ -72,7 +72,7 @@ export const InfoText = styled.span`
 export const Players = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: 8px;
 `;
 
 export const Player = styled.div`

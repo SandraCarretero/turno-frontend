@@ -7,6 +7,7 @@ export const NavigationShade = styled.div`
   position: fixed;
   left: 0;
   bottom: 0;
+  z-index: 100;
 `;
 
 export const NavigationContainer = styled.nav`

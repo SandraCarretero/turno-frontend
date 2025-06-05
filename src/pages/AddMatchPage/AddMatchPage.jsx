@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { X, Search, Users, Calendar, Trophy, Shield } from 'lucide-react';
-import { matchAPI, gameAPI, userAPI, guestAPI } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from "react"
+import { useForm, useFieldArray } from "react-hook-form"
+import { useNavigate, useParams } from "react-router-dom"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { X, Users, Calendar, Trophy, Shield } from "lucide-react"
+import { matchAPI, gameAPI, userAPI, guestAPI } from "../../services/api"
+import { useAuth } from "../../context/AuthContext"
+import toast from "react-hot-toast"
 import {
   PageContainer,
   Title,
@@ -31,6 +31,7 @@ import {
   PlayerItem,
   PlayerInfo,
   PlayerName,
+  SyncButton,
   RemovePlayerButton,
   AddPlayerContainer,
   PlayerSearchInput,
@@ -41,68 +42,96 @@ import {
   CheckboxLabel,
   ButtonGroup,
   Button,
-  ErrorMessage
-} from './AddMatchPage.styles';
-import UserAvatar from '../../components/UserAvatar/UserAvatar';
-import GuestSelector from '../../components/GuestSelector/GuestSelector';
-import GuestSyncModal from '../../components/GuestSyncModal/GuestSyncModal';
-import Loader from '../../components/Loader/Loader';
+  ErrorMessage,
+  SearchStatus,
+  CooperativeResultContainer,
+  CooperativeResultHeader,
+  CooperativeResultOptions,
+  CooperativeResultOption,
+  TeamWinnersContainer,
+  TeamWinnersHeader,
+  TeamWinnersButtons,
+  TeamWinnerButton,
+  TeamWinnersNote,
+} from "./AddMatchPage.styles"
+import UserAvatar from "../../components/UserAvatar/UserAvatar"
+import GuestSyncModal from "../../components/GuestSyncModal/GuestSyncModal"
+import AddGuestModal from "../../components/AddGuestModal/AddGuestModal"
+import Loader from "../../components/Loader/Loader"
 
 const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+  const [debouncedValue, setDebouncedValue] = useState(value)
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+      setDebouncedValue(value)
+    }, delay)
 
     return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
+      clearTimeout(handler)
+    }
+  }, [value, delay])
 
-  return debouncedValue;
-};
+  return debouncedValue
+}
 
 const AddMatchPage = ({ editMode = false }) => {
-  const { matchId } = useParams();
-  const [gameQuery, setGameQuery] = useState('');
-  const [selectedGame, setSelectedGame] = useState(null);
-  const [playerQuery, setPlayerQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showGuestInput, setShowGuestInput] = useState(false);
-  const [guestName, setGuestName] = useState('');
-  const [gameSearchError, setGameSearchError] = useState(null);
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { matchId } = useParams()
+  const [gameQuery, setGameQuery] = useState("")
+  const [selectedGame, setSelectedGame] = useState(null)
+  const [playerQuery, setPlayerQuery] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [gameSearchError, setGameSearchError] = useState(null)
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
-  const [showGuestSelector, setShowGuestSelector] = useState(false);
-  const [syncModalGuestId, setSyncModalGuestId] = useState(null);
+  const [showAddGuestModal, setShowAddGuestModal] = useState(false)
+  const [syncModalGuestId, setSyncModalGuestId] = useState(null)
+  const [syncModalGuestData, setSyncModalGuestData] = useState(null)
+  const [syncingPlayerIndex, setSyncingPlayerIndex] = useState(null)
 
-  const [cooperativeResult, setCooperativeResult] = useState(true);
-  const [availableTeams] = useState(['Team A', 'Team B', 'Team C', 'Team D']);
+  const [cooperativeResult, setCooperativeResult] = useState(true)
+  const [availableTeams] = useState(["Team A", "Team B", "Team C", "Team D"])
 
-  const debouncedGameQuery = useDebounce(gameQuery, 800);
-  const debouncedPlayerQuery = useDebounce(playerQuery, 300);
+  const debouncedGameQuery = useDebounce(gameQuery, 800)
+  const debouncedPlayerQuery = useDebounce(playerQuery, 300)
 
   const { data: existingMatch, isLoading: isLoadingMatch } = useQuery({
-    queryKey: ['match', matchId],
+    queryKey: ["match", matchId],
     queryFn: () => matchAPI.getMatch(matchId),
-    enabled: editMode
-  });
+    enabled: editMode,
+  })
 
-  const { data: guestsData } = useQuery({
-    queryKey: ['guests'],
-    queryFn: () => guestAPI.getGuests()
-  });
+  const {
+    data: guestsData = [],
+    isLoading: isLoadingGuests,
+    refetch: refetchGuests,
+  } = useQuery({
+    queryKey: ["guests"],
+    queryFn: () => guestAPI.getGuests(),
+  })
 
-  const syncedGuestsMap = {};
+  // Mutation para crear un nuevo invitado
+  const createGuestMutation = useMutation({
+    mutationFn: (guestData) => guestAPI.createGuest(guestData),
+    onSuccess: (data) => {
+      console.log("✅ Guest created successfully:", data)
+      // Invalidar la caché de invitados para que se actualice
+      queryClient.invalidateQueries(["guests"])
+    },
+    onError: (error) => {
+      console.error("❌ Error in createGuestMutation:", error)
+    },
+  })
+
+  const syncedGuestsMap = {}
   if (guestsData && Array.isArray(guestsData)) {
-    guestsData.forEach(guest => {
+    guestsData.forEach((guest) => {
       if (guest.syncedWith) {
-        syncedGuestsMap[guest._id] = guest.syncedWith;
+        syncedGuestsMap[guest._id] = guest.syncedWith
       }
-    });
+    })
   }
 
   const {
@@ -112,19 +141,19 @@ const AddMatchPage = ({ editMode = false }) => {
     watch,
     setValue,
     reset,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues: editMode
       ? {
           players: [],
           duration: 60,
-          date: new Date().toISOString().split('T')[0],
-          location: '',
-          notes: '',
+          date: new Date().toISOString().split("T")[0],
+          location: "",
+          notes: "",
           isTeamGame: false,
           isCooperative: false,
           hasWinner: true,
-          status: 'completed'
+          status: "completed",
         }
       : {
           players: [
@@ -134,28 +163,28 @@ const AddMatchPage = ({ editMode = false }) => {
               avatar: user.avatar,
               score: 0,
               isWinner: false,
-              team: null
-            }
+              team: null,
+            },
           ],
           duration: 60,
-          date: new Date().toISOString().split('T')[0],
-          location: '',
-          notes: '',
+          date: new Date().toISOString().split("T")[0],
+          location: "",
+          notes: "",
           isTeamGame: false,
           isCooperative: false,
           hasWinner: true,
-          status: 'completed'
-        }
-  });
+          status: "completed",
+        },
+  })
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove, replace, update } = useFieldArray({
     control,
-    name: 'players'
-  });
+    name: "players",
+  })
 
   useEffect(() => {
     if (editMode && existingMatch && !isLoadingMatch) {
-      const formattedPlayers = existingMatch.players.map(player => ({
+      const formattedPlayers = existingMatch.players.map((player) => ({
         id: player.user?._id,
         user: player.user?._id || null,
         guest: player.guest || null,
@@ -163,90 +192,86 @@ const AddMatchPage = ({ editMode = false }) => {
         avatar: player.user?.avatar || player.guestAvatar || null,
         score: player.score,
         isWinner: player.isWinner,
-        team: player.team || null
-      }));
+        team: player.team || null,
+      }))
 
       if (existingMatch.isCooperative) {
-        const hasWinners = formattedPlayers.some(p => p.isWinner);
-        setCooperativeResult(hasWinners);
+        const hasWinners = formattedPlayers.some((p) => p.isWinner)
+        setCooperativeResult(hasWinners)
       }
 
-      replace(formattedPlayers);
+      replace(formattedPlayers)
 
       reset({
         players: formattedPlayers,
         duration: existingMatch.duration,
-        date: new Date(existingMatch.date).toISOString().split('T')[0],
+        date: new Date(existingMatch.date).toISOString().split("T")[0],
         location: existingMatch.location,
         notes: existingMatch.notes,
         isTeamGame: existingMatch.isTeamGame,
         isCooperative: existingMatch.isCooperative,
         hasWinner: existingMatch.hasWinner,
-        status: existingMatch.status
-      });
+        status: existingMatch.status,
+      })
 
-      setSelectedGame(existingMatch.game);
+      setSelectedGame(existingMatch.game)
     }
-  }, [editMode, existingMatch, isLoadingMatch, reset, replace]);
+  }, [editMode, existingMatch, isLoadingMatch, reset, replace])
 
-  const isCooperative = watch('isCooperative');
-  const isTeamGame = watch('isTeamGame');
-  const hasWinner = watch('hasWinner');
+  const isCooperative = watch("isCooperative")
+  const isTeamGame = watch("isTeamGame")
+  const hasWinner = watch("hasWinner")
 
   const {
     data: games = [],
     isFetching: isFetchingGames,
-    error: gamesError
+    error: gamesError,
   } = useQuery({
-    queryKey: ['searchGames', debouncedGameQuery],
+    queryKey: ["searchGames", debouncedGameQuery],
     queryFn: async () => {
       try {
-        const response = await gameAPI.searchGames(debouncedGameQuery);
-        setGameSearchError(null);
-        return response ?? [];
+        const response = await gameAPI.searchGames(debouncedGameQuery)
+        setGameSearchError(null)
+        return response ?? []
       } catch (error) {
         if (error.response?.status === 429) {
-          setGameSearchError(
-            'Demasiadas peticiones, espere un momento antes de volver a buscar'
-          );
-          throw new Error('Rate limit exceeded');
+          setGameSearchError("Demasiadas peticiones, espere un momento antes de volver a buscar")
+          throw new Error("Rate limit exceeded")
         }
-        setGameSearchError(
-          'Error al buscar juegos, por favor inténtelo de nuevo.'
-        );
-        throw error;
+        setGameSearchError("Error al buscar juegos, por favor inténtelo de nuevo.")
+        throw error
       }
     },
     enabled: debouncedGameQuery.length >= 3,
     retry: (failureCount, error) => {
-      if (error.message === 'Rate limit exceeded') {
-        return false;
+      if (error.message === "Rate limit exceeded") {
+        return false
       }
-      return failureCount < 2;
+      return failureCount < 2
     },
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000
-  });
+    cacheTime: 10 * 60 * 1000,
+  })
 
   const { data: users = [] } = useQuery({
-    queryKey: ['searchUsers', debouncedPlayerQuery],
+    queryKey: ["searchUsers", debouncedPlayerQuery],
     queryFn: async () => {
-      const response = await userAPI.searchUsers(debouncedPlayerQuery);
-      return response?.data || [];
+      const response = await userAPI.searchUsers(debouncedPlayerQuery)
+      return response?.data || []
     },
     enabled: debouncedPlayerQuery.length >= 2,
-    staleTime: 2 * 60 * 1000
-  });
+    staleTime: 2 * 60 * 1000,
+  })
 
-  const handleGameSelect = game => {
-    setSelectedGame(game);
-    setGameQuery('');
-    setGameSearchError(null);
-  };
+  const handleGameSelect = (game) => {
+    setSelectedGame(game)
+    setGameQuery("")
+    setGameSearchError(null)
+  }
 
-  const handlePlayerAdd = player => {
-    const isAlreadyAdded = fields.some(field => field.user === player._id);
+  const handlePlayerAdd = (player) => {
+    const isAlreadyAdded = fields.some((field) => field.user === player._id)
     if (!isAlreadyAdded) {
       append({
         user: player._id,
@@ -255,31 +280,76 @@ const AddMatchPage = ({ editMode = false }) => {
         avatar: player.avatar,
         score: 0,
         isWinner: false,
-        team: null
-      });
+        team: null,
+      })
     }
-    setPlayerQuery('');
-  };
+    setPlayerQuery("")
+  }
 
-  const handleAddGuest = () => {
-    if (!guestName.trim()) return;
+  const handleAddNewGuest = async (guestName) => {
+    try {
+      console.log("🔄 Creating guest with name:", guestName)
 
-    append({
-      user: null,
-      guest: null,
-      username: guestName,
-      avatar: null,
-      score: 0,
-      isWinner: false,
-      team: null
-    });
+      // Mostrar estado de carga
+      setShowAddGuestModal(false) // Cerrar modal inmediatamente para mejor UX
 
-    setGuestName('');
-    setShowGuestInput(false);
-  };
+      // Crear el invitado en la base de datos
+      const response = await createGuestMutation.mutateAsync({
+        name: guestName,
+        avatar: null,
+      })
 
-  const handleGuestSelect = guest => {
-    const isAlreadyAdded = fields.some(field => field.guest === guest._id);
+      console.log("📦 Full API response:", response)
+
+      // La respuesta puede tener diferentes estructuras dependiendo de la API
+      // Vamos a manejar las posibles estructuras
+      let newGuest = response
+
+      // Si la respuesta tiene una propiedad 'data', usar esa
+      if (response && response.data) {
+        newGuest = response.data
+      }
+
+      // Si la respuesta tiene una propiedad 'guest', usar esa
+      if (response && response.guest) {
+        newGuest = response.guest
+      }
+
+      console.log("👤 Processed guest data:", newGuest)
+
+      // Verificar que tenemos los datos necesarios
+      const guestId = newGuest._id || newGuest.id
+      const guestNameFromResponse = newGuest.name || guestName // Fallback al nombre original
+      const guestAvatar = newGuest.avatar || null
+
+      if (!guestId) {
+        throw new Error("No se pudo obtener el ID del invitado creado")
+      }
+
+      // Añadir el invitado a la partida actual
+      append({
+        user: null,
+        guest: guestId,
+        username: guestNameFromResponse,
+        avatar: guestAvatar,
+        score: 0,
+        isWinner: false,
+        team: null,
+      })
+
+      toast.success(`Invitado "${guestNameFromResponse}" creado con éxito`)
+
+      // Refrescar la lista de invitados para futuras partidas
+      await refetchGuests()
+    } catch (error) {
+      console.error("❌ Error creating guest:", error)
+      toast.error("Error al crear invitado")
+      setShowAddGuestModal(true) // Reabrir modal si hay error
+    }
+  }
+
+  const handleGuestSelect = (guest) => {
+    const isAlreadyAdded = fields.some((field) => field.guest === guest._id)
     if (!isAlreadyAdded) {
       append({
         user: null,
@@ -288,107 +358,135 @@ const AddMatchPage = ({ editMode = false }) => {
         avatar: guest.avatar,
         score: 0,
         isWinner: false,
-        team: null
-      });
+        team: null,
+      })
     }
-    setShowGuestSelector(false);
-  };
+    setShowAddGuestModal(false)
+  }
 
-  const handleGuestSync = guestId => {
-    setSyncModalGuestId(guestId);
-  };
+  const handleGuestSync = (field, index) => {
+    // Guardar el índice del jugador que estamos sincronizando
+    setSyncingPlayerIndex(index)
 
-  const isGuestSynced = guestId => {
-    return syncedGuestsMap[guestId] !== undefined;
-  };
+    if (field.guest) {
+      // Invitado existente - usar el ID del invitado
+      setSyncModalGuestId(field.guest)
+      setSyncModalGuestData(null)
+    } else {
+      // Invitado nuevo - pasar los datos del invitado
+      setSyncModalGuestId(null)
+      setSyncModalGuestData({
+        name: field.username,
+        avatar: field.avatar,
+      })
+    }
+  }
+
+  const handleSyncComplete = (syncData) => {
+    // Verificar que tenemos el índice del jugador y los datos de sincronización
+    if (syncingPlayerIndex !== null && syncData && syncData.user) {
+      // Obtener el jugador actual
+      const currentPlayer = fields[syncingPlayerIndex]
+
+      if (currentPlayer) {
+        // Guardar el score y team actuales
+        const currentScore = currentPlayer.score
+        const currentTeam = currentPlayer.team
+        const currentIsWinner = currentPlayer.isWinner
+
+        // Reemplazar el invitado por el usuario real
+        update(syncingPlayerIndex, {
+          user: syncData.user._id,
+          guest: null, // Ya no es un invitado
+          username: syncData.user.username,
+          avatar: syncData.user.avatar,
+          score: currentScore,
+          isWinner: currentIsWinner,
+          team: currentTeam,
+        })
+
+        toast.success(`¡Jugador actualizado a ${syncData.user.username}!`)
+      }
+    }
+
+    // Refrescar la lista de invitados
+    refetchGuests()
+
+    // Limpiar el estado
+    setSyncingPlayerIndex(null)
+    setSyncModalGuestId(null)
+    setSyncModalGuestData(null)
+  }
+
+  const isGuestSynced = (guestId) => {
+    return syncedGuestsMap[guestId] !== undefined
+  }
+
+  // Función para determinar si mostrar el botón de sincronizar
+  const shouldShowSyncButton = (field) => {
+    // No mostrar para usuarios registrados
+    if (field.user) return false
+
+    // Para invitados existentes, mostrar solo si no están sincronizados
+    if (field.guest) {
+      return !isGuestSynced(field.guest)
+    }
+
+    // Para invitados nuevos (sin field.guest), siempre mostrar
+    return true
+  }
 
   const getUniqueTeams = () => {
-    const currentPlayers = watch('players') || [];
-    const teams = currentPlayers.map(player => player.team).filter(Boolean);
-    return [...new Set(teams)];
-  };
+    const currentPlayers = watch("players") || []
+    const teams = currentPlayers.map((player) => player.team).filter(Boolean)
+    return [...new Set(teams)]
+  }
 
-  const isTeamWinner = teamName => {
-    const currentPlayers = watch('players') || [];
-    return currentPlayers.some(
-      player => player.team === teamName && player.isWinner
-    );
-  };
+  const isTeamWinner = (teamName) => {
+    const currentPlayers = watch("players") || []
+    return currentPlayers.some((player) => player.team === teamName && player.isWinner)
+  }
 
-  const handleTeamWin = teamName => {
-    const currentPlayers = watch('players') || [];
+  const handleTeamWin = (teamName) => {
+    const currentPlayers = watch("players") || []
 
     currentPlayers.forEach((player, index) => {
       if (player.team === teamName) {
-        setValue(`players.${index}.isWinner`, true);
+        setValue(`players.${index}.isWinner`, true)
       } else if (player.team) {
-        setValue(`players.${index}.isWinner`, false);
+        setValue(`players.${index}.isWinner`, false)
       }
-    });
-  };
+    })
+  }
 
-  const getTeamButtonStyle = teamName => {
-    const isWinner = isTeamWinner(teamName);
-    const baseStyle = {
-      padding: '0.75rem 1.5rem',
-      fontSize: '0.875rem',
-      fontWeight: '600',
-      border: '2px solid',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem'
-    };
-
-    if (isWinner) {
-      return {
-        ...baseStyle,
-        backgroundColor: '#28a745',
-        borderColor: '#1e7e34',
-        color: 'white',
-        boxShadow: '0 4px 8px rgba(40, 167, 69, 0.3)'
-      };
-    } else {
-      return {
-        ...baseStyle,
-        backgroundColor: 'white',
-        borderColor: '#007bff',
-        color: '#007bff',
-        boxShadow: '0 2px 4px rgba(0, 123, 255, 0.1)'
-      };
-    }
-  };
-
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     if (!selectedGame) {
-      toast.error('Please select a game');
-      return;
+      toast.error("Please select a game")
+      return
     }
 
     if (data.players.length < 1) {
-      toast.error('At least one player is required');
-      return;
+      toast.error("At least one player is required")
+      return
     }
 
     if (data.isTeamGame) {
-      const playersWithTeams = data.players.filter(p => p.team);
+      const playersWithTeams = data.players.filter((p) => p.team)
       if (playersWithTeams.length === 0) {
-        toast.error('Please assign at least one player to a team');
-        return;
+        toast.error("Please assign at least one player to a team")
+        return
       }
     }
 
-    setLoading(true);
+    setLoading(true)
     try {
       const matchData = {
         game: {
           bggId: selectedGame.bggId,
           name: selectedGame.name,
-          image: selectedGame.image
+          image: selectedGame.image,
         },
-        players: data.players.map(player => ({
+        players: data.players.map((player) => ({
           user: player.user,
           guest: player.guest,
           guestId: !player.user && !player.guest ? player.id : null,
@@ -396,7 +494,7 @@ const AddMatchPage = ({ editMode = false }) => {
           guestAvatar: !player.user && !player.guest ? player.avatar : null,
           score: Number(player.score) || 0,
           isWinner: data.isCooperative ? cooperativeResult : player.isWinner,
-          team: data.isTeamGame ? player.team : null
+          team: data.isTeamGame ? player.team : null,
         })),
         duration: Number(data.duration),
         date: new Date(data.date),
@@ -405,25 +503,25 @@ const AddMatchPage = ({ editMode = false }) => {
         isTeamGame: data.isTeamGame,
         isCooperative: data.isCooperative,
         hasWinner: data.hasWinner,
-        status: data.status
-      };
-
-      if (editMode) {
-        await matchAPI.updateMatch(matchId, matchData);
-        toast.success('Partida modificada con éxito');
-      } else {
-        await matchAPI.createMatch(matchData);
-        toast.success('Partida creada con éxito');
+        status: data.status,
       }
 
-      navigate('/profile');
+      if (editMode) {
+        await matchAPI.updateMatch(matchId, matchData)
+        toast.success("Partida modificada con éxito")
+      } else {
+        await matchAPI.createMatch(matchData)
+        toast.success("Partida creada con éxito")
+      }
+
+      navigate("/profile")
     } catch (error) {
-      console.error('Error creating match:', error);
-      toast.error(error.response?.data?.message || 'Error al añadir juego');
+      console.error("Error creating match:", error)
+      toast.error(error.response?.data?.message || "Error al añadir juego")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (editMode && isLoadingMatch) {
     return (
@@ -431,12 +529,12 @@ const AddMatchPage = ({ editMode = false }) => {
         <div>Cargando datos del juego</div>
         <Loader />
       </PageContainer>
-    );
+    )
   }
 
   return (
     <PageContainer>
-      <Title>{editMode ? 'Editar partida' : 'Crear nueva partida'}</Title>
+      <Title>{editMode ? "Editar partida" : "Crear nueva partida"}</Title>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         {/* Game Selection */}
@@ -448,16 +546,11 @@ const AddMatchPage = ({ editMode = false }) => {
                 <GameInfo>
                   <GameName>{selectedGame.name}</GameName>
                   <GameMeta>
-                    {selectedGame.minPlayers}-{selectedGame.maxPlayers} jugadores
-                    • {selectedGame.playingTime}min
+                    {selectedGame.minPlayers}-{selectedGame.maxPlayers} jugadores • {selectedGame.playingTime}min
                   </GameMeta>
                 </GameInfo>
               </SelectedGame>
-              <Button
-                type="button"
-                $variant="secondary"
-                onClick={() => setSelectedGame(null)}
-              >
+              <Button type="button" $variant="secondary" onClick={() => setSelectedGame(null)}>
                 Cambiar juego
               </Button>
             </>
@@ -467,49 +560,25 @@ const AddMatchPage = ({ editMode = false }) => {
                 type="text"
                 placeholder="Selecciona juego de mesa"
                 value={gameQuery}
-                onChange={e => {
-                  setGameQuery(e.target.value);
-                  if (gameSearchError) setGameSearchError(null);
+                onChange={(e) => {
+                  setGameQuery(e.target.value)
+                  if (gameSearchError) setGameSearchError(null)
                 }}
               />
 
-              {isFetchingGames && debouncedGameQuery.length >= 3 && (
-                <div
-                  style={{ padding: '12px', fontSize: '14px', color: '#666' }}
-                >
-                 Buscando juegos...
-                </div>
-              )}
+              {isFetchingGames && debouncedGameQuery.length >= 3 && <SearchStatus>Buscando juegos...</SearchStatus>}
 
-              {gameSearchError && (
-                <div
-                  style={{
-                    padding: '12px',
-                    fontSize: '14px',
-                    color: '#dc2626',
-                    backgroundColor: '#fef2f2',
-                    border: '1px solid #fecaca',
-                    borderRadius: '6px',
-                    margin: '8px 0'
-                  }}
-                >
-                  {gameSearchError}
-                </div>
-              )}
+              {gameSearchError && <SearchStatus $error>{gameSearchError}</SearchStatus>}
 
               {games.length > 0 && !gameSearchError && (
                 <GameSearchResults>
-                  {games.map(game => (
-                    <GameSearchResult
-                      key={game.bggId}
-                      onClick={() => handleGameSelect(game)}
-                    >
+                  {games.map((game) => (
+                    <GameSearchResult key={game.bggId} onClick={() => handleGameSelect(game)}>
                       <GameImage src={game.thumbnail} alt={game.name} />
                       <GameInfo>
                         <GameName>{game.name}</GameName>
                         <GameMeta>
-                          {game.minPlayers}-{game.maxPlayers} jugadores •{' '}
-                          {game.playingTime}min
+                          {game.minPlayers}-{game.maxPlayers} jugadores • {game.playingTime}min
                         </GameMeta>
                       </GameInfo>
                     </GameSearchResult>
@@ -517,16 +586,9 @@ const AddMatchPage = ({ editMode = false }) => {
                 </GameSearchResults>
               )}
 
-              {debouncedGameQuery.length >= 3 &&
-                games.length === 0 &&
-                !isFetchingGames &&
-                !gameSearchError && (
-                  <div
-                    style={{ padding: '12px', fontSize: '14px', color: '#666' }}
-                  >
-                    No hay juegos "{debouncedGameQuery}"
-                  </div>
-                )}
+              {debouncedGameQuery.length >= 3 && games.length === 0 && !isFetchingGames && !gameSearchError && (
+                <SearchStatus>No hay juegos "{debouncedGameQuery}"</SearchStatus>
+              )}
             </GameSearchContainer>
           )}
         </>
@@ -546,14 +608,10 @@ const AddMatchPage = ({ editMode = false }) => {
                     <UserAvatar user={field} />
                     <div>
                       <PlayerName>{field.username}</PlayerName>
-                      {field.guest && !isGuestSynced(field.guest) && (
-                        <button
-                          type="button"
-                          onClick={() => handleGuestSync(field.guest)}
-                          className="text-xs text-blue-600 hover:text-blue-700"
-                        >
+                      {shouldShowSyncButton(field) && (
+                        <SyncButton type="button" onClick={() => handleGuestSync(field, index)}>
                           Sincronizar
-                        </button>
+                        </SyncButton>
                       )}
                     </div>
                   </PlayerInfo>
@@ -561,12 +619,9 @@ const AddMatchPage = ({ editMode = false }) => {
                   {isTeamGame && (
                     <InputGroup>
                       <Label>Team</Label>
-                      <Select
-                        {...register(`players.${index}.team`)}
-                        style={{ width: '120px' }}
-                      >
+                      <Select {...register(`players.${index}.team`)}>
                         <option value="">No Team</option>
-                        {availableTeams.map(team => (
+                        {availableTeams.map((team) => (
                           <option key={team} value={team}>
                             {team}
                           </option>
@@ -577,32 +632,18 @@ const AddMatchPage = ({ editMode = false }) => {
 
                   <InputGroup>
                     <Label>Puntos</Label>
-                    <Input
-                      type="number"
-                      {...register(`players.${index}.score`)}
-                      placeholder="0"
-                      style={{ width: '50px' }}
-                    />
+                    <Input type="number" {...register(`players.${index}.score`)} placeholder="0" />
                   </InputGroup>
 
                   {hasWinner && !isCooperative && !isTeamGame && (
                     <CheckboxGroup>
-                      <Checkbox
-                        type="checkbox"
-                        {...register(`players.${index}.isWinner`)}
-                        id={`winner-${index}`}
-                      />
-                      <CheckboxLabel htmlFor={`winner-${index}`}>
-                        Ganadaor
-                      </CheckboxLabel>
+                      <Checkbox type="checkbox" {...register(`players.${index}.isWinner`)} id={`winner-${index}`} />
+                      <CheckboxLabel htmlFor={`winner-${index}`}>Ganador</CheckboxLabel>
                     </CheckboxGroup>
                   )}
 
                   {(editMode || index > 0) && (
-                    <RemovePlayerButton
-                      type="button"
-                      onClick={() => remove(index)}
-                    >
+                    <RemovePlayerButton type="button" onClick={() => remove(index)}>
                       <X size={16} />
                     </RemovePlayerButton>
                   )}
@@ -611,152 +652,72 @@ const AddMatchPage = ({ editMode = false }) => {
             </PlayersList>
 
             {isCooperative && hasWinner && (
-              <div
-                style={{
-                  marginTop: '1rem',
-                  padding: '1rem',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '8px',
-                  border: '1px solid #e9ecef'
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    marginBottom: '0.5rem'
-                  }}
-                >
-                  <Trophy size={20} style={{ color: '#28a745' }} />
-                  <h4
-                    style={{ margin: 0, fontSize: '1rem', fontWeight: '600' }}
-                  >
-                    Team Result
-                  </h4>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      cursor: 'pointer'
-                    }}
-                  >
+              <CooperativeResultContainer>
+                <CooperativeResultHeader>
+                  <Trophy size={20} />
+                  <h4>Team Result</h4>
+                </CooperativeResultHeader>
+                <CooperativeResultOptions>
+                  <CooperativeResultOption>
                     <input
                       type="radio"
                       checked={cooperativeResult === true}
                       onChange={() => setCooperativeResult(true)}
                     />
-                    <span style={{ color: '#28a745', fontWeight: '500' }}>
-                      Team Won 🎉
-                    </span>
-                  </label>
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      cursor: 'pointer'
-                    }}
-                  >
+                    <span $success>Team Won 🎉</span>
+                  </CooperativeResultOption>
+                  <CooperativeResultOption>
                     <input
                       type="radio"
                       checked={cooperativeResult === false}
                       onChange={() => setCooperativeResult(false)}
                     />
-                    <span style={{ color: '#dc3545', fontWeight: '500' }}>
-                      Team Lost 😞
-                    </span>
-                  </label>
-                </div>
-              </div>
+                    <span $error>Team Lost 😞</span>
+                  </CooperativeResultOption>
+                </CooperativeResultOptions>
+              </CooperativeResultContainer>
             )}
 
-            {isTeamGame &&
-              hasWinner &&
-              !isCooperative &&
-              getUniqueTeams().length > 0 && (
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    padding: '1rem',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '8px',
-                    border: '1px solid #e9ecef'
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      marginBottom: '1rem'
-                    }}
-                  >
-                    <Shield size={20} style={{ color: '#007bff' }} />
-                    <h4
-                      style={{ margin: 0, fontSize: '1rem', fontWeight: '600' }}
-                    >
-                      Team Winners
-                    </h4>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '0.75rem'
-                    }}
-                  >
-                    {getUniqueTeams().map(team => {
-                      const isWinner = isTeamWinner(team);
-                      return (
-                        <button
-                          key={team}
-                          type="button"
-                          onClick={() => handleTeamWin(team)}
-                          style={getTeamButtonStyle(team)}
-                        >
-                          {isWinner && <Trophy size={16} />}
-                          {team} {isWinner ? 'WINS!' : 'Wins'}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p
-                    style={{
-                      fontSize: '0.875rem',
-                      color: '#6c757d',
-                      margin: '0.75rem 0 0 0'
-                    }}
-                  >
-                    Click a team button to mark all players in that team as
-                    winners.
-                    {getUniqueTeams().some(team => isTeamWinner(team)) && (
-                      <span style={{ color: '#28a745', fontWeight: '500' }}>
-                        {' '}
-                        Winner selected!
-                      </span>
-                    )}
-                  </p>
-                </div>
-              )}
+            {isTeamGame && hasWinner && !isCooperative && getUniqueTeams().length > 0 && (
+              <TeamWinnersContainer>
+                <TeamWinnersHeader>
+                  <Shield size={20} />
+                  <h4>Team Winners</h4>
+                </TeamWinnersHeader>
+                <TeamWinnersButtons>
+                  {getUniqueTeams().map((team) => {
+                    const isWinner = isTeamWinner(team)
+                    return (
+                      <TeamWinnerButton
+                        key={team}
+                        type="button"
+                        onClick={() => handleTeamWin(team)}
+                        $isWinner={isWinner}
+                      >
+                        {isWinner && <Trophy size={16} />}
+                        {team} {isWinner ? "WINS!" : "Wins"}
+                      </TeamWinnerButton>
+                    )
+                  })}
+                </TeamWinnersButtons>
+                <TeamWinnersNote>
+                  Click a team button to mark all players in that team as winners.
+                  {getUniqueTeams().some((team) => isTeamWinner(team)) && <span> Winner selected!</span>}
+                </TeamWinnersNote>
+              </TeamWinnersContainer>
+            )}
 
             <AddPlayerContainer>
               <PlayerSearchInput
                 type="text"
                 placeholder="Buscar usuarios..."
                 value={playerQuery}
-                onChange={e => setPlayerQuery(e.target.value)}
+                onChange={(e) => setPlayerQuery(e.target.value)}
               />
               {users.length > 0 && (
                 <PlayerSearchResults>
-                  {users.map(user => (
-                    <PlayerSearchResult
-                      key={user._id}
-                      onClick={() => handlePlayerAdd(user)}
-                    >
+                  {users.map((user) => (
+                    <PlayerSearchResult key={user._id} onClick={() => handlePlayerAdd(user)}>
                       <UserAvatar user={user} size="small" />
                       <PlayerName>{user.username}</PlayerName>
                     </PlayerSearchResult>
@@ -764,40 +725,11 @@ const AddMatchPage = ({ editMode = false }) => {
                 </PlayerSearchResults>
               )}
 
-              <div className="flex gap-2 mt-4">
-                <Button
-                  type="button"
-                  onClick={() => setShowGuestSelector(true)}
-                  $variant="secondary"
-                >
+              <div style={{ marginTop: "1rem" }}>
+                <Button type="button" onClick={() => setShowAddGuestModal(true)} $variant="secondary">
                   Añadir un invitado
                 </Button>
-                
               </div>
-
-              {showGuestInput && (
-                <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
-                  <Input
-                    type="text"
-                    placeholder="Guest player name"
-                    value={guestName}
-                    onChange={e => setGuestName(e.target.value)}
-                  />
-                  <Button type="button" onClick={handleAddGuest}>
-                    Add
-                  </Button>
-                </div>
-              )}
-
-              {showGuestSelector && (
-                <div className="mt-4">
-                  <GuestSelector
-                    onGuestSelect={handleGuestSelect}
-                    selectedGuests={fields.filter(f => f.guest)}
-                    onClose={() => setShowGuestSelector(false)}
-                  />
-                </div>
-              )}
             </AddPlayerContainer>
           </PlayersSection>
         </Section>
@@ -810,10 +742,7 @@ const AddMatchPage = ({ editMode = false }) => {
 
           <InputGroup>
             <Label>Date</Label>
-            <Input
-              type="date"
-              {...register('date', { required: 'Date is required' })}
-            />
+            <Input type="date" {...register("date", { required: "Date is required" })} />
             {errors.date && <ErrorMessage>{errors.date.message}</ErrorMessage>}
           </InputGroup>
 
@@ -821,32 +750,28 @@ const AddMatchPage = ({ editMode = false }) => {
             <Label>Duration (minutes)</Label>
             <Input
               type="number"
-              {...register('duration', {
-                required: 'Duration is required',
-                min: { value: 1, message: 'Duration must be at least 1 minute' }
+              {...register("duration", {
+                required: "Duration is required",
+                min: { value: 1, message: "Duration must be at least 1 minute" },
               })}
               placeholder="60"
             />
-            {errors.duration && (
-              <ErrorMessage>{errors.duration.message}</ErrorMessage>
-            )}
+            {errors.duration && <ErrorMessage>{errors.duration.message}</ErrorMessage>}
           </InputGroup>
 
           <InputGroup>
             <Label>Location</Label>
             <Input
               type="text"
-              {...register('location', { required: 'Location is required' })}
+              {...register("location", { required: "Location is required" })}
               placeholder="Where did you play?"
             />
-            {errors.location && (
-              <ErrorMessage>{errors.location.message}</ErrorMessage>
-            )}
+            {errors.location && <ErrorMessage>{errors.location.message}</ErrorMessage>}
           </InputGroup>
 
           <InputGroup>
             <Label>Status</Label>
-            <Select {...register('status')}>
+            <Select {...register("status")}>
               <option value="completed">Completed</option>
               <option value="in-progress">In Progress</option>
               <option value="scheduled">Scheduled</option>
@@ -854,69 +779,66 @@ const AddMatchPage = ({ editMode = false }) => {
           </InputGroup>
 
           <CheckboxGroup>
-            <Checkbox
-              type="checkbox"
-              {...register('isCooperative')}
-              id="cooperative"
-            />
-            <CheckboxLabel htmlFor="cooperative">
-              Cooperative Game
-            </CheckboxLabel>
+            <Checkbox type="checkbox" {...register("isCooperative")} id="cooperative" />
+            <CheckboxLabel htmlFor="cooperative">Cooperative Game</CheckboxLabel>
           </CheckboxGroup>
 
           <CheckboxGroup>
-            <Checkbox
-              type="checkbox"
-              {...register('isTeamGame')}
-              id="teamGame"
-            />
+            <Checkbox type="checkbox" {...register("isTeamGame")} id="teamGame" />
             <CheckboxLabel htmlFor="teamGame">Team Game</CheckboxLabel>
           </CheckboxGroup>
 
           {!isCooperative && (
             <CheckboxGroup>
-              <Checkbox
-                type="checkbox"
-                {...register('hasWinner')}
-                id="hasWinner"
-              />
+              <Checkbox type="checkbox" {...register("hasWinner")} id="hasWinner" />
               <CheckboxLabel htmlFor="hasWinner">Has Winner</CheckboxLabel>
             </CheckboxGroup>
           )}
 
           <InputGroup>
             <Label>Notes (optional)</Label>
-            <TextArea
-              {...register('notes')}
-              placeholder="Any additional notes about the match..."
-              rows={3}
-            />
+            <TextArea {...register("notes")} placeholder="Any additional notes about the match..." rows={3} />
           </InputGroup>
         </Section>
 
         <ButtonGroup>
-          <Button
-            type="button"
-            $variant="secondary"
-            onClick={() => navigate(-1)}
-          >
+          <Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button type="submit" disabled={loading || !selectedGame}>
-            {editMode ? 'Update Match' : 'Add Match'}
+            {editMode ? "Update Match" : "Add Match"}
           </Button>
         </ButtonGroup>
       </Form>
 
-      {syncModalGuestId && (
+      {/* Modals */}
+      {showAddGuestModal && (
+        <AddGuestModal
+          isOpen={showAddGuestModal}
+          onClose={() => setShowAddGuestModal(false)}
+          onAddGuest={handleAddNewGuest}
+          onGuestSelect={handleGuestSelect}
+          existingGuests={guestsData || []}
+          selectedGuests={fields.filter((f) => f.guest)}
+          isLoading={isLoadingGuests || createGuestMutation.isLoading}
+        />
+      )}
+
+      {(syncModalGuestId || syncModalGuestData) && (
         <GuestSyncModal
-          isOpen={!!syncModalGuestId}
-          onClose={() => setSyncModalGuestId(null)}
+          isOpen={!!(syncModalGuestId || syncModalGuestData)}
+          onClose={() => {
+            setSyncModalGuestId(null)
+            setSyncModalGuestData(null)
+            setSyncingPlayerIndex(null)
+          }}
           guestId={syncModalGuestId}
+          guestData={syncModalGuestData}
+          onSyncComplete={handleSyncComplete}
         />
       )}
     </PageContainer>
-  );
-};
+  )
+}
 
-export default AddMatchPage;
+export default AddMatchPage

@@ -9,8 +9,7 @@ const MatchList = ({ matches, loading }) => {
   if (!matches || matches.length === 0) {
     return (
       <EmptyState>
-        <h3>No matches yet</h3>
-        <p>Start tracking your board game sessions!</p>
+        <h3>No hay partidas aún</h3>
       </EmptyState>
     );
   }
