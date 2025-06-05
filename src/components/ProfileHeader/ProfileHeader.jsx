@@ -18,9 +18,9 @@ import {
 } from "./ProfileHeader.styles"
 import UserAvatar from "../UserAvatar/UserAvatar"
 
-const ProfileHeader = ({ user, onEditProfile, matches }) => {
+const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
   const fileInputRef = useRef(null)
-  const { updateUser, logout } = useAuth()
+  const { updateUser, user: authUser } = useAuth()
   const [isUploading, setIsUploading] = useState(false)
 
   const handleAvatarClick = () => {
@@ -31,12 +31,6 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
   const handleAvatarChange = async (event) => {
     const file = event.target.files[0]
     if (!file) return
-
-    console.log("Archivo seleccionado:", {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-    })
 
     const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
     if (!validTypes.includes(file.type.toLowerCase())) {
@@ -52,20 +46,14 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
     const formData = new FormData()
     formData.append("avatar", file)
 
-    console.log("FormData creado:", formData.get("avatar"))
-
     setIsUploading(true)
 
     try {
-      console.log("Iniciando subida de avatar...")
-
       const response = await userAPI.uploadAvatar(formData)
-
-      console.log("Respuesta del servidor:", response)
 
       if (response.data && response.data.success) {
         updateUser({
-          ...user,
+          ...authUser,
           avatar: response.data.avatar || response.data.data?.url,
         })
 
@@ -114,11 +102,13 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
     }
   }
 
+  const displayUser = user?._id === authUser?._id ? authUser : user
+
   return (
     <HeaderContainer>
       <AvatarSection>
         <AvatarContainer onClick={handleAvatarClick} disabled={isUploading}>
-          <UserAvatar user={user} size="big" />
+          <UserAvatar user={displayUser} size="big" />
 
           <AvatarOverlay isUploading={isUploading}>
             {isUploading ? <Loader2 size={20} className="animate-spin" /> : <Camera size={20} />}
@@ -134,18 +124,18 @@ const ProfileHeader = ({ user, onEditProfile, matches }) => {
         </AvatarContainer>
 
         <UserInfo>
-          <Username>{user?.username}</Username>
-          <Email>{user?.email}</Email>
+          <Username>{displayUser?.username}</Username>
+          <Email>{displayUser?.email}</Email>
         </UserInfo>
       </AvatarSection>
 
       <Stats>
         <StatItem>
-          <StatValue>{user?.games?.length || 0}</StatValue>
+          <StatValue>{displayUser?.games?.length || 0}</StatValue>
           <StatLabel>Games</StatLabel>
         </StatItem>
         <StatItem>
-          <StatValue>{user?.friends?.filter((f) => f.status === "accepted").length || 0}</StatValue>
+          <StatValue>{displayUser?.friends?.filter((f) => f.status === "accepted").length || 0}</StatValue>
           <StatLabel>Friends</StatLabel>
         </StatItem>
         <StatItem>

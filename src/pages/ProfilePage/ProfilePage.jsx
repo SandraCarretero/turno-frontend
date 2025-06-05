@@ -14,13 +14,12 @@ import { useParams } from 'react-router-dom';
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('matches');
   const [showEditModal, setShowEditModal] = useState(false);
-  const { user } = useAuth(); 
+  const { user: authUser } = useAuth();
   const { userId } = useParams();
   const queryClient = useQueryClient();
 
   const targetUserId = userId || user?._id;
   const isOwnProfile = !userId || userId === user?._id;
-  const isAuthLoading = !user && !userId;
 
   const {
     data: profileData,
@@ -44,10 +43,17 @@ const ProfilePage = () => {
   }, [profileData, isOwnProfile, user, queryClient]);
 
   useEffect(() => {
-  if (targetUserId) {
-    refetch();
-  }
-}, [targetUserId, refetch]);
+    if (targetUserId) {
+      refetch();
+    }
+  }, [targetUserId, refetch]);
+
+  useEffect(() => {
+    if (isOwnProfile && authUser) {
+      console.log('Usuario autenticado actualizado, refrescando perfil...');
+      refetch();
+    }
+  }, [authUser, isOwnProfile, refetch]);
 
   const matches = profileData?.matches || [];
 
@@ -56,12 +62,30 @@ const ProfilePage = () => {
   };
 
   const refreshProfileData = async () => {
+    queryClient.invalidateQueries(['userProfile', targetUserId]);
+    queryClient.invalidateQueries(['user', targetUserId]);
     await refetch();
   };
 
-  const displayUser = profileData?.user || user;
-  const displayGames = profileData?.user?.games || user?.games || [];
-  const displayFriends = profileData?.user?.friends || user?.friends || [];
+  const displayUser = isOwnProfile && authUser ? authUser : profileData?.user;
+  const displayGames = profileData?.user?.games || authUser?.games || [];
+  const displayFriends = profileData?.user?.friends || authUser?.friends || [];
+
+  if (isLoading && !displayUser) {
+    return (
+      <PageContainer>
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>Cargando perfil...</div>
+      </PageContainer>
+    )
+  }
+
+  if (error && !displayUser) {
+    return (
+      <PageContainer>
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>Error al cargar el perfil</div>
+      </PageContainer>
+    )
+  }
 
   return (
     <PageContainer>
