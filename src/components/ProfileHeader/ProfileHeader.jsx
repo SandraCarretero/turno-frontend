@@ -22,7 +22,7 @@ import UserAvatar from '../UserAvatar/UserAvatar';
 
 const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
   const fileInputRef = useRef(null);
-  const { updateUser, user: authUser } = useAuth();
+  const { updateUser, user: authUser, logout } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
 
   const handleAvatarClick = () => {
