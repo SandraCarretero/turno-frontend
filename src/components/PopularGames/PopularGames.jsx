@@ -19,17 +19,22 @@ const PopularGames = ({ games = [], loading }) => {
   }
 
   return (
-    <GameGrid>
-      {games.map(game => (
-        <GameCard key={game.bggId} as={Link} to={`/game/${game.bggId}`}>
-          <GameRank>#{game.rank}</GameRank>
-          <GameImage src={game.thumbnail.$?.value || game.thumbnail} alt={game.name} />
-          <GameInfo>
-            <GameTitle>{game.name}</GameTitle>
-          </GameInfo>
-        </GameCard>
-      ))}
-    </GameGrid>
+    <div>
+      <GameGrid>
+        {games.map(game => (
+          <GameCard key={game.bggId} as={Link} to={`/game/${game.bggId}`}>
+            <GameRank>#{game.rank}</GameRank>
+            <GameImage
+              src={game.thumbnail.$?.value || game.thumbnail}
+              alt={game.name}
+            />
+            <GameInfo>
+              <GameTitle>{game.name}</GameTitle>
+            </GameInfo>
+          </GameCard>
+        ))}
+      </GameGrid>
+    </div>
   );
 };
 
