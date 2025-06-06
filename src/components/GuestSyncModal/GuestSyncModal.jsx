@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { X, Search, UserCheck } from "lucide-react"
 import {
@@ -21,6 +23,7 @@ import {
   SyncSuccess,
 } from "./GuestSyncModal.styles"
 import UserAvatar from "../UserAvatar/UserAvatar"
+import { AvatarPlaceholder } from "../UserAvatar/UserAvatar.styles"
 import { userAPI, guestAPI } from "../../services/api"
 import toast from "react-hot-toast"
 
@@ -106,6 +109,7 @@ const GuestSyncModal = ({ isOpen, onClose, guestId, guestData, onSyncComplete })
       }
 
       setSyncSuccess(true)
+      toast.success(`¡${guest.name} sincronizado con ${user.username}!`)
 
       // Notify parent component that sync is complete with the user data and guest ID
       if (onSyncComplete) {
@@ -164,7 +168,11 @@ const GuestSyncModal = ({ isOpen, onClose, guestId, guestData, onSyncComplete })
                 <div style={{ marginBottom: "1.5rem" }}>
                   <h3 style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>Invitado a sincronizar:</h3>
                   <UserItem $noHover>
-                    <UserAvatar user={{ avatar: guest.avatar, username: guest.name }} />
+                    {guest.avatar ? (
+                      <UserAvatar user={{ avatar: guest.avatar, username: guest.name }} />
+                    ) : (
+                      <AvatarPlaceholder $size="medium">{guest.name?.charAt(0).toUpperCase() || "?"}</AvatarPlaceholder>
+                    )}
                     <UserInfo>
                       <UserName>{guest.name}</UserName>
                       <p style={{ margin: 0, fontSize: "0.85rem", color: "#6c757d" }}>

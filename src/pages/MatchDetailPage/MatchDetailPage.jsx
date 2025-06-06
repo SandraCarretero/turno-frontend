@@ -359,14 +359,16 @@ const MatchDetailPage = () => {
           {/* Cooperative Game Result */}
           {match.isCooperative && (
             <CooperativeResult $success={cooperativeResult}>
-              <CooperativeIcon>
-                <Trophy size={24} />
-              </CooperativeIcon>
+              {cooperativeResult && (
+                <CooperativeIcon>
+                  <Trophy size={24} />
+                </CooperativeIcon>
+              )}
               <div>
                 <CooperativeTitle>
                   {cooperativeResult
-                    ? '🎉 ¡Victoria del Equipo!'
-                    : '😞 Derrota del Equipo'}
+                    ? '¡Victoria del Equipo!'
+                    : 'Derrota del Equipo'}
                 </CooperativeTitle>
                 <CooperativeText>
                   Todos los jugadores{' '}

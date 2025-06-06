@@ -68,6 +68,7 @@ export const InputGroup = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.25rem;
+  width: 100%;
 `;
 
 export const Label = styled.label`
@@ -270,25 +271,21 @@ export const PlayersList = styled.div`
 `;
 
 export const PlayerItem = styled.div`
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 1rem;
   padding: 1.25rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
   border-radius: 1rem;
   border: 1px solid #e9ecef;
   flex-wrap: wrap;
   transition: all 0.2s ease;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
 
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
   }
 `;
 
@@ -325,12 +322,15 @@ export const SyncButton = styled.button`
 `;
 
 export const RemovePlayerButton = styled.button`
-  background: #dc3545;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: var(--color-danger);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 25px;
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -375,9 +375,9 @@ export const PlayerSearchInput = styled.input`
 
 export const PlayerSearchResults = styled.div`
   position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
+  width: 82%;
+  top: 42%;
+  margin: 0 auto;
   background: white;
   border: 2px solid #e9ecef;
   border-radius: 0.75rem;
@@ -556,10 +556,6 @@ export const ButtonGroup = styled.div`
   justify-content: center;
   margin-top: 2rem;
   padding-top: 1rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
 `;
 
 export const Button = styled.button`

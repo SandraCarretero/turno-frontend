@@ -190,11 +190,12 @@ export const MatchMeta = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 0.75rem;
 `;
 
 export const MetaItem = styled.div`
-  width: 48%;
+  width: 46%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -520,7 +521,7 @@ export const CooperativeIcon = styled.div`
   border-radius: 50%;
   background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: ${props => (props.$success ? '#28a745' : '#dc3545')};
+  color: #28a745;
   flex-shrink: 0;
 
   @media (max-width: 768px) {
