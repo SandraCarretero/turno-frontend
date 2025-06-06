@@ -26,6 +26,72 @@ export const Title = styled.h1`
     border-radius: 2px;
   }
 `
+
+export const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+export const StatCard = styled.div`
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+`
+
+export const StatHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const StatTitle = styled.h3`
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6c757d;
+  margin: 0;
+`
+
+export const StatIcon = styled.div`
+  background: ${(props) => props.$color || "var(--color-primary)"}15;
+  color: ${(props) => props.$color || "var(--color-primary)"};
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px ${(props) => props.$color || "var(--color-primary)"}20;
+`
+
+export const StatValue = styled.div`
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  line-height: 1;
+`
+
+export const StatSubtext = styled.div`
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+`
+
 export const StatTrend = styled.div`
   display: flex;
   align-items: center;
@@ -82,84 +148,6 @@ export const SectionTitle = styled.h2`
 export const ChartContainer = styled.div`
   height: ${(props) => props.$height || "400px"};
   margin-bottom: 1.5rem;
-`
-
-export const TabsContainer = styled.div`
-  display: flex;
-  border-bottom: 2px solid #e9ecef;
-  margin-bottom: 1.5rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`
-
-export const Tab = styled.button`
-  padding: 1rem 1.5rem;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  font-weight: ${(props) => (props.$active ? "600" : "500")};
-  color: ${(props) => (props.$active ? "var(--color-primary)" : "#6c757d")};
-  cursor: pointer;
-  border-bottom: 2px solid ${(props) => (props.$active ? "var(--color-primary)" : "transparent")};
-  margin-bottom: -2px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-
-  &:hover {
-    color: ${(props) => (props.$active ? "var(--color-primary)" : "#333")};
-    background: #f8f9fa;
-  }
-`
-
-export const FilterContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 0.75rem;
-  border: 1px solid #e9ecef;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`
-
-export const FilterGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-  }
-`
-
-export const FilterLabel = styled.label`
-  font-weight: 600;
-  color: #333;
-  font-size: 0.95rem;
-`
-
-export const FilterSelect = styled.select`
-  padding: 0.75rem 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 0.75rem;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  background: white;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
-  }
 `
 
 export const NoDataMessage = styled.div`
@@ -261,7 +249,6 @@ export const RefreshButton = styled.button`
   color: white;
   border: none;
   border-radius: 0.75rem;
-  font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;

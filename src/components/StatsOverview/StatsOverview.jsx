@@ -1,11 +1,10 @@
-'use client';
+"use client"
 
 import {
   OverviewContainer,
   OverviewCard,
   CardHeader,
   CardTitle,
-  CardIcon,
   CardContent,
   MainStat,
   MainValue,
@@ -16,236 +15,290 @@ import {
   SubStatValue,
   ProgressBar,
   ProgressFill,
-  TrendIndicator,
-  RecentActivity,
-  ActivityTitle,
-  ActivityList,
-  ActivityItem,
-  ActivityGame,
-  ActivityDate
-} from './StatsOverview.styles';
-import {
-  Trophy,
-  Calendar,
-  Clock,
-  Users,
-  Star,
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Award
-} from 'lucide-react';
+  GameCard,
+  GameImage,
+  GameInfo,
+  GameName,
+  GameCount,
+  PartnerCard,
+  PartnerInfo,
+  PartnerName,
+  PartnerCount,
+} from "./StatsOverview.styles"
+import { Trophy, Calendar, Star, Users } from "lucide-react"
 
 const StatsOverview = ({ stats = {} }) => {
-  const {
-    totalMatches = 0,
-    totalWins = 0,
-    totalPlayTime = 0,
-    uniqueGames = 0,
-    winRate = 0,
-    averageScore = 0,
-    favoriteGame = null,
-    recentMatches = [],
-    monthlyGrowth = 0,
-    weeklyMatches = 0
-  } = stats;
+  console.log("📊 Stats data received:", stats)
+  console.log("📊 Most played with friend:", stats.mostPlayedWithFriend)
 
   // Función para validar y formatear números
   const safeNumber = (value, defaultValue = 0) => {
-    const num = Number(value);
-    return isNaN(num) ? defaultValue : num;
-  };
+    const num = Number(value)
+    return isNaN(num) ? defaultValue : num
+  }
 
   // Función para formatear porcentajes
-  const formatPercentage = value => {
-    const num = safeNumber(value, 0);
-    return num.toFixed(1);
-  };
+  const formatPercentage = (value) => {
+    const num = safeNumber(value, 0)
+    return num.toFixed(1)
+  }
 
-  // Calcular winRate si no viene en los datos
-  const calculatedWinRate =
-    totalMatches > 0 ? (totalWins / totalMatches) * 100 : 0;
-  const finalWinRate = safeNumber(winRate) || calculatedWinRate;
+  // MEJORADO: Función para obtener el nombre del compañero
+  const getPartnerDisplayName = () => {
+    const partner = stats.mostPlayedWithFriend
+    console.log("🤝 Partner data for display:", partner)
 
-  const formatPlayTime = minutes => {
-    const totalMinutes = safeNumber(minutes, 0);
-    const hours = Math.floor(totalMinutes / 60);
-    const mins = totalMinutes % 60;
-    return { hours, minutes: mins };
-  };
-
-  const playTime = formatPlayTime(totalPlayTime);
-
-  const formatDate = dateString => {
-    try {
-      return new Date(dateString).toLocaleDateString('es-ES', {
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch (error) {
-      return 'N/A';
+    if (!partner) {
+      console.log("❌ No partner data found")
+      return "Sin compañero frecuente"
     }
-  };
+
+    // Priorizar username, luego name, luego email (sin @domain)
+    if (partner.username && partner.username.trim() !== "") {
+      console.log("✅ Using username:", partner.username)
+      return partner.username
+    }
+
+    if (partner.name && partner.name.trim() !== "") {
+      console.log("✅ Using name:", partner.name)
+      return partner.name
+    }
+
+    if (partner.email && partner.email.trim() !== "") {
+      const emailName = partner.email.split("@")[0]
+      console.log("✅ Using email name:", emailName)
+      return emailName
+    }
+
+    console.log("⚠️ No valid name found, using fallback")
+    return "Usuario sin nombre"
+  }
+
+  // MEJORADO: Función para verificar si hay datos válidos del compañero
+  const hasValidPartnerData = () => {
+    const partner = stats.mostPlayedWithFriend
+
+    if (!partner) {
+      console.log("🔍 No partner object found")
+      return false
+    }
+
+    const hasCount = partner.count && partner.count > 0
+    const hasIdentifier = partner.name || partner.username || partner.email
+
+    console.log("🔍 Partner validation:", {
+      hasPartner: !!partner,
+      hasCount: hasCount,
+      count: partner.count,
+      hasName: !!partner.name,
+      hasUsername: !!partner.username,
+      hasEmail: !!partner.email,
+      hasIdentifier: !!hasIdentifier,
+      finalValidation: hasCount && hasIdentifier,
+    })
+
+    return hasCount && hasIdentifier
+  }
+
+  // Extraer datos del backend
+  const totalMatches = safeNumber(stats.totalMatches)
+  const totalWins = safeNumber(stats.wins)
+  const winRate = safeNumber(stats.winRate)
+  const monthlyMatches = safeNumber(stats.matchesThisMonth)
+  const monthlyUniqueGames = safeNumber(stats.uniqueGamesThisMonth)
+
+  // Calcular partidas semanales (estimación)
+  const weeklyMatches = Math.min(Math.ceil(monthlyMatches / 4), monthlyMatches)
+
+  // Calcular juegos únicos totales
+  let uniqueGamesTotal = monthlyUniqueGames
+  if (stats.mostPlayedGame && stats.mostPlayedGame.count) {
+    const mostPlayedCount = stats.mostPlayedGame.count
+    const estimatedGames = Math.ceil(totalMatches / mostPlayedCount)
+    uniqueGamesTotal = Math.max(monthlyUniqueGames, estimatedGames)
+  }
+
+  // Estimar total de compañeros únicos
+  let totalPartners = 0
+  if (totalMatches > 0) {
+    // Estimación más realista basada en el total de partidas
+    totalPartners = Math.max(1, Math.ceil(totalMatches / 5))
+  }
+
+  console.log("📈 Processed data:", {
+    totalMatches,
+    totalWins,
+    winRate,
+    monthlyMatches,
+    weeklyMatches,
+    monthlyUniqueGames,
+    uniqueGamesTotal,
+    hasValidPartnerData: hasValidPartnerData(),
+    partnerName: getPartnerDisplayName(),
+    partnerCount: stats.mostPlayedWithFriend?.count,
+    totalPartners,
+  })
 
   return (
     <OverviewContainer>
-      {/* Partidas y Victorias */}
+      {/* Partidas Jugadas */}
       <OverviewCard $accentColor="#007bff">
         <CardHeader>
           <CardTitle $iconColor="#007bff">
-            <Trophy size={20} />
-            Rendimiento General
+            <Calendar size={20} />
+            Partidas Jugadas
           </CardTitle>
-          <CardIcon $color="#007bff">
-            <Target size={20} />
-          </CardIcon>
         </CardHeader>
         <CardContent>
           <MainStat>
-            <MainValue>{safeNumber(totalWins)}</MainValue>
-            <MainUnit>/ {safeNumber(totalMatches)} victorias</MainUnit>
+            <MainValue>{totalMatches}</MainValue>
+            <MainUnit>partidas jugadas</MainUnit>
+          </MainStat>
+          <SubStats>
+            <SubStat>
+              <SubStatLabel>{weeklyMatches} partidas jugadas esta semana</SubStatLabel>
+            </SubStat>
+            <SubStat>
+              <SubStatLabel>{monthlyMatches} partidas jugadas este mes</SubStatLabel>
+            </SubStat>
+          </SubStats>
+        </CardContent>
+      </OverviewCard>
+
+      {/* Rendimiento */}
+      <OverviewCard $accentColor="#28a745">
+        <CardHeader>
+          <CardTitle $iconColor="#28a745">
+            <Trophy size={20} />
+            Rendimiento General
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <MainStat>
+            <MainValue>{totalWins}</MainValue>
+            <MainUnit>/ {totalMatches} victorias</MainUnit>
           </MainStat>
           <ProgressBar>
-            <ProgressFill $percentage={finalWinRate} $color="#007bff" />
+            <ProgressFill $percentage={winRate} $color="#28a745" />
           </ProgressBar>
           <SubStats>
             <SubStat>
               <SubStatLabel>Tasa de victoria</SubStatLabel>
-              <SubStatValue>{formatPercentage(finalWinRate)}%</SubStatValue>
-            </SubStat>
-            <SubStat>
-              <SubStatLabel>Puntuación promedio</SubStatLabel>
-              <SubStatValue>{safeNumber(averageScore)}</SubStatValue>
+              <SubStatValue>{formatPercentage(winRate)}%</SubStatValue>
             </SubStat>
           </SubStats>
-          {safeNumber(monthlyGrowth) !== 0 && (
-            <TrendIndicator
-              $positive={monthlyGrowth > 0}
-              $negative={monthlyGrowth < 0}
-            >
-              {monthlyGrowth > 0 ? (
-                <TrendingUp size={14} />
-              ) : (
-                <TrendingDown size={14} />
-              )}
-              {Math.abs(safeNumber(monthlyGrowth))}% este mes
-            </TrendIndicator>
-          )}
         </CardContent>
       </OverviewCard>
 
-      {/* Tiempo de Juego */}
+      {/* Juegos Este Mes */}
       <OverviewCard $accentColor="#6f42c1">
         <CardHeader>
           <CardTitle $iconColor="#6f42c1">
-            <Clock size={20} />
-            Tiempo de Juego
-          </CardTitle>
-          <CardIcon $color="#6f42c1">
-            <Calendar size={20} />
-          </CardIcon>
-        </CardHeader>
-        <CardContent>
-          <MainStat>
-            <MainValue>{playTime.hours}</MainValue>
-            <MainUnit>horas {playTime.minutes}min</MainUnit>
-          </MainStat>
-          <SubStats>
-            <SubStat>
-              <SubStatLabel>Partidas esta semana</SubStatLabel>
-              <SubStatValue>{safeNumber(weeklyMatches)}</SubStatValue>
-            </SubStat>
-            <SubStat>
-              <SubStatLabel>Promedio por partida</SubStatLabel>
-              <SubStatValue>
-                {safeNumber(totalMatches) > 0
-                  ? Math.round(
-                      safeNumber(totalPlayTime) / safeNumber(totalMatches)
-                    )
-                  : 0}{' '}
-                min
-              </SubStatValue>
-            </SubStat>
-          </SubStats>
-        </CardContent>
-      </OverviewCard>
-
-      {/* Juegos y Colección */}
-      <OverviewCard $accentColor="#28a745">
-        <CardHeader>
-          <CardTitle $iconColor="#28a745">
             <Star size={20} />
-            Tu Colección
+            Juegos Este Mes
           </CardTitle>
-          <CardIcon $color="#28a745">
-            <Award size={20} />
-          </CardIcon>
         </CardHeader>
         <CardContent>
           <MainStat>
-            <MainValue>{safeNumber(uniqueGames)}</MainValue>
-            <MainUnit>juegos diferentes</MainUnit>
+            <MainValue>{monthlyUniqueGames}</MainValue>
+            <MainUnit>juegos diferentes este mes</MainUnit>
           </MainStat>
+
           <SubStats>
             <SubStat>
-              <SubStatLabel>Juego favorito</SubStatLabel>
-              <SubStatValue>{favoriteGame?.name || 'N/A'}</SubStatValue>
+              <SubStatLabel>{uniqueGamesTotal} juegos diferentes en total</SubStatLabel>
             </SubStat>
-            {favoriteGame && (
-              <SubStat>
-                <SubStatLabel>Partidas jugadas</SubStatLabel>
-                <SubStatValue>
-                  {safeNumber(favoriteGame.playCount)}
-                </SubStatValue>
-              </SubStat>
+            {stats.mostPlayedGame?.game && (
+              <GameCard>
+                <GameImage
+                  src={stats.mostPlayedGame.game.image || "/placeholder.svg?height=60&width=60&query=board game"}
+                  alt={stats.mostPlayedGame.game.name}
+                  onError={(e) => {
+                    e.target.src = "/placeholder.svg?height=60&width=60"
+                  }}
+                />
+                <GameInfo>
+                  <GameName>{stats.mostPlayedGame.game.name}</GameName>
+                  <GameCount>{stats.mostPlayedGame.count} partidas jugadas</GameCount>
+                </GameInfo>
+              </GameCard>
             )}
           </SubStats>
         </CardContent>
       </OverviewCard>
 
-      {/* Actividad Reciente */}
+      {/* MEJORADO: Compañero Top */}
       <OverviewCard $accentColor="#fd7e14">
         <CardHeader>
           <CardTitle $iconColor="#fd7e14">
             <Users size={20} />
-            Actividad Reciente
+            Compañero Top
           </CardTitle>
-          <CardIcon $color="#fd7e14">
-            <Calendar size={20} />
-          </CardIcon>
         </CardHeader>
         <CardContent>
-          <MainStat>
-            <MainValue>
-              {Array.isArray(recentMatches) ? recentMatches.length : 0}
-            </MainValue>
-            <MainUnit>partidas recientes</MainUnit>
-          </MainStat>
-          <RecentActivity>
-            <ActivityTitle>Últimas Partidas</ActivityTitle>
-            <ActivityList>
-              {Array.isArray(recentMatches) && recentMatches.length > 0 ? (
-                recentMatches.slice(0, 4).map((match, index) => (
-                  <ActivityItem key={match._id || index}>
-                    <ActivityGame>
-                      {match.game?.name || 'Juego desconocido'}
-                    </ActivityGame>
-                    <ActivityDate>{formatDate(match.date)}</ActivityDate>
-                  </ActivityItem>
-                ))
-              ) : (
-                <ActivityItem>
-                  <span style={{ color: '#6c757d', fontStyle: 'italic' }}>
-                    No hay partidas recientes
-                  </span>
-                </ActivityItem>
-              )}
-            </ActivityList>
-          </RecentActivity>
+          {hasValidPartnerData() ? (
+            <>
+              <MainStat>
+                <MainValue style={{ fontSize: "1.8rem" }}>{getPartnerDisplayName()}</MainValue>
+                <MainUnit>es con quien más has jugado</MainUnit>
+              </MainStat>
+
+              <SubStats>
+                <SubStat>
+                  <SubStatLabel>Estimado: {totalPartners} personas diferentes han jugado contigo</SubStatLabel>
+                </SubStat>
+
+                <PartnerCard>
+                  <PartnerInfo>
+                    <PartnerName>Partidas juntos</PartnerName>
+                    <PartnerCount>{stats.mostPlayedWithFriend.count} partidas</PartnerCount>
+                  </PartnerInfo>
+                </PartnerCard>
+              </SubStats>
+            </>
+          ) : (
+            <>
+              <MainStat>
+                <MainValue style={{ fontSize: "1.5rem" }}>
+                  {totalMatches === 0
+                    ? "Sin partidas aún"
+                    : totalMatches < 2
+                      ? "Necesitas más partidas"
+                      : "Sin compañeros frecuentes"}
+                </MainValue>
+                <MainUnit>
+                  {totalMatches === 0
+                    ? "juega tu primera partida"
+                    : totalMatches < 2
+                      ? "juega más partidas multijugador"
+                      : "juega más con los mismos compañeros"}
+                </MainUnit>
+              </MainStat>
+
+              <SubStats>
+                <SubStat>
+                  <SubStatLabel>
+                    🎮{" "}
+                    {totalMatches === 0
+                      ? "Registra partidas para ver estadísticas de compañeros"
+                      : totalMatches < 2
+                        ? "Necesitas al menos 2 partidas multijugador"
+                        : "Juega más partidas con las mismas personas para ver estadísticas detalladas"}
+                  </SubStatLabel>
+                </SubStat>
+
+                {totalPartners > 0 && (
+                  <SubStat>
+                    <SubStatLabel>Estimado: {totalPartners} personas diferentes han jugado contigo</SubStatLabel>
+                  </SubStat>
+                )}
+              </SubStats>
+            </>
+          )}
         </CardContent>
       </OverviewCard>
     </OverviewContainer>
-  );
-};
+  )
+}
 
-export default StatsOverview;
+export default StatsOverview
