@@ -54,11 +54,13 @@ export const ToggleButton = styled.button`
   cursor: pointer;
   transition: all 0.2s;
 
-  background: ${props => (props.$active ? 'var(--color-primary)' : 'transparent')};
+  background: ${props =>
+    props.$active ? 'var(--color-primary)' : 'transparent'};
   color: ${props => (props.$active ? 'white' : '#6c757d')};
 
   &:hover {
-    background: ${props => (props.$active ? 'var(--color-primary-hover)' : '#e9ecef')};
+    background: ${props =>
+      props.$active ? 'var(--color-primary-hover)' : '#e9ecef'};
     color: ${props => (props.$active ? 'white' : 'var(--color-gray-800)')};
   }
 `;
@@ -135,12 +137,14 @@ export const ResultsList = styled.div`
 `;
 
 export const ResultItem = styled.div`
+  width: 92%;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.5rem;
   cursor: pointer;
-  border-bottom: 1px solid #f8f9fa;
+  border-bottom: 1px solid var(--color-gray-200);
   transition: background-color 0.2s;
 
   &:hover {

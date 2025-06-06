@@ -176,7 +176,7 @@ export const GameName = styled.div`
 
 export const GameCount = styled.div`
   font-size: 0.8rem;
-  color: #6f42c1;
+  color: #1AB3A6;
   font-weight: 500;
   background: #6f42c115;
   padding: 0.25rem 0.5rem;

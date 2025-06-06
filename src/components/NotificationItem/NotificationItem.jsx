@@ -48,13 +48,13 @@ const NotificationItem = ({ notification, onAcceptFriendRequest }) => {
   const getNotificationColor = type => {
     switch (type) {
       case 'friend_request':
-        return '#007bff';
+        return '#470E5C';
       case 'friend_accepted':
-        return '#28a745';
+        return '#1AB3A6';
       case 'match_invitation':
         return '#ffc107';
       case 'match_added':
-        return '#6f42c1';
+        return '#ff611a';
       default:
         return '#6c757d';
     }
@@ -110,7 +110,7 @@ const NotificationItem = ({ notification, onAcceptFriendRequest }) => {
           {notification.type === 'friend_request' && !accepted && (
             <ActionButton onClick={handleAccept}>
               <UserPlus size={14} />
-              Accept
+              Aceptar
             </ActionButton>
           )}
         </NotificationActions>

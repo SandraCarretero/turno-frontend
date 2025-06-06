@@ -10,7 +10,7 @@ export const NotificationContainer = styled.div`
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  border-left: 4px solid ${(props) => (props.isRead ? "#e9ecef" : "#007bff")};
+  border-left: 4px solid var(--color-secondary);
 
   &:hover {
     transform: translateY(-1px);
@@ -125,6 +125,6 @@ export const ReadIndicator = styled.div`
   right: 1rem;
   width: 8px;
   height: 8px;
-  background: #007bff;
+  background: var(--color-secondary);
   border-radius: 50%;
 `

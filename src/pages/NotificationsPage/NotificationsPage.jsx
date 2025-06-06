@@ -66,10 +66,10 @@ const NotificationsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
       queryClient.invalidateQueries(['notificationCount']);
-      toast.success('Friend request accepted');
+      toast.success('Petición de amistad aceptada');
     },
     onError: () => {
-      toast.error('Failed to accept friend request');
+      toast.error('Error al aceptar la petición de amistad');
     }
   });
 
@@ -91,18 +91,15 @@ const NotificationsPage = () => {
   return (
     <PageContainer>
       <Header>
-        <Title>
-          Notifications
-          {unreadCount > 0 && <span> ({unreadCount} unread)</span>}
-        </Title>
+        <Title>Notificaciones</Title>
       </Header>
 
       {notifications.length === 0 ? (
         <EmptyState>
           <EmptyIcon>🔔</EmptyIcon>
-          <EmptyTitle>No notifications yet</EmptyTitle>
+          <EmptyTitle>No tienes notificaciones todavía</EmptyTitle>
           <EmptyDescription>
-            When you receive notifications, they'll appear here.
+            Cuando recivas notificaciones aparecerán aquí
           </EmptyDescription>
         </EmptyState>
       ) : (

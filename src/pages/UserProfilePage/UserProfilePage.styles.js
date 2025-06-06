@@ -1,17 +1,17 @@
-import styled from "styled-components"
+import styled from 'styled-components';
 
 export const PageContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
-`
+`;
 
 export const BackButton = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  color: #007bff;
+  color: var(--color-primary);
   text-decoration: none;
   border-radius: 0.5rem;
   transition: background-color 0.2s;
@@ -20,32 +20,25 @@ export const BackButton = styled.div`
   &:hover {
     background: #f8f9fa;
   }
-`
+`;
 
 export const ProfileHeader = styled.div`
-  background: white;
   border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
-
-  @media (max-width: 768px) {
-    padding: 1.5rem;
-  }
-`
+`;
 
 export const UserInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
+`;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-`
+export const UserColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 export const UserAvatar = styled.img`
   width: 100px;
@@ -54,7 +47,7 @@ export const UserAvatar = styled.img`
   object-fit: cover;
   border: 4px solid #e9ecef;
   flex-shrink: 0;
-`
+`;
 
 export const UserDetails = styled.div`
   flex: 1;
@@ -64,7 +57,7 @@ export const UserDetails = styled.div`
     margin: 0.5rem 0;
     font-size: 0.9rem;
   }
-`
+`;
 
 export const Username = styled.h1`
   font-size: 2rem;
@@ -75,7 +68,7 @@ export const Username = styled.h1`
   @media (max-width: 768px) {
     font-size: 1.5rem;
   }
-`
+`;
 
 export const FriendStatus = styled.div`
   display: inline-flex;
@@ -86,42 +79,30 @@ export const FriendStatus = styled.div`
   font-size: 0.875rem;
   font-weight: 500;
   margin-top: 0.5rem;
-  
-  background: ${(props) => (props.status === "accepted" ? "#28a74515" : "#ffc10715")};
-  color: ${(props) => (props.status === "accepted" ? "#28a745" : "#ffc107")};
-`
+
+  background: ${props =>
+    props.status === 'accepted' ? '#28a74515' : '#ffc10715'};
+  color: ${props => (props.status === 'accepted' ? '#28a745' : '#ffc107')};
+`;
 
 export const UserStats = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 3rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  justify-content: space-between;
+`;
 
-  @media (max-width: 768px) {
-    gap: 2rem;
-  }
-`
-
-export const StatItem = styled.div`
-  text-align: center;
-`
+export const StatItem = styled.div``;
 
 export const StatValue = styled.div`
-  font-size: 2rem;
-  font-weight: 700;
-  color: #007bff;
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-primary);
+`;
 
 export const StatLabel = styled.div`
   font-size: 0.875rem;
   color: #6c757d;
-  font-weight: 500;
-  margin-top: 0.25rem;
-`
+`;
 
 export const ActionButtons = styled.div`
   display: flex;
@@ -131,7 +112,7 @@ export const ActionButtons = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
   }
-`
+`;
 
 export const ActionButton = styled.button`
   display: flex;
@@ -143,13 +124,27 @@ export const ActionButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  
-  background: ${(props) => (props.variant === "secondary" ? "#6c757d" : "#007bff")};
-  color: white;
 
-  &:hover:not(:disabled) {
-    background: ${(props) => (props.variant === "secondary" ? "#545b62" : "#0056b3")};
-    transform: translateY(-1px);
+  background: ${props =>
+    props.variant === 'secondary' ? 'transparent' : 'var(--color-secondary)'};
+  color: ${props =>
+    props.variant === 'secondary'
+      ? 'var(--color-secondary)'
+      : 'var(--color-white)'};
+  border: ${props =>
+    props.variant === 'secondary'
+      ? '1px solid var(--color-secondary)'
+      : 'var(--color-secondary)'};
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: ${props =>
+        props.variant === 'secondary'
+          ? 'var(--color-secondary)'
+          : 'var(--color-secondary-hover)'};
+      transform: translateY(-1px);
+      color: var(--color-white);
+    }
   }
 
   &:disabled {
@@ -157,11 +152,11 @@ export const ActionButton = styled.button`
     cursor: not-allowed;
     opacity: 0.6;
   }
-`
+`;
 
 export const Section = styled.section`
   margin-bottom: 2rem;
-`
+`;
 
 export const SectionTitle = styled.h2`
   display: flex;
@@ -173,13 +168,13 @@ export const SectionTitle = styled.h2`
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #f8f9fa;
-`
+`;
 
 export const MatchesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-`
+`;
 
 export const LoadingText = styled.div`
   text-align: center;
@@ -187,7 +182,7 @@ export const LoadingText = styled.div`
   font-style: italic;
   padding: 3rem;
   font-size: 1.1rem;
-`
+`;
 
 export const ErrorMessage = styled.div`
   text-align: center;
@@ -196,7 +191,7 @@ export const ErrorMessage = styled.div`
   background: white;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-`
+`;
 
 export const EmptyMatches = styled.div`
   text-align: center;
@@ -210,4 +205,4 @@ export const EmptyMatches = styled.div`
     margin: 0;
     font-size: 1rem;
   }
-`
+`;
