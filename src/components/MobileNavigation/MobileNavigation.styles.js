@@ -8,6 +8,11 @@ export const NavigationShade = styled.div`
   left: 0;
   bottom: 0;
   z-index: 100;
+
+  @media (width >= 768px) {
+    background: none;
+    pointer-events: none;
+  }
 `;
 
 export const NavigationContainer = styled.nav`
@@ -25,18 +30,22 @@ export const NavigationContainer = styled.nav`
   padding: 0.5rem 0;
   z-index: 1000;
 
-  @media (min-width: 768px) {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    bottom: 0;
-    width: 250px;
+  @media (width >= 768px) {
+    height: 80dvh;
+    width: max-content;
     flex-direction: column;
-    justify-content: flex-start;
-    padding: 2rem 0;
-    border-top: none;
-    border-right: 1px solid #e9ecef;
+    align-items: stretch;
+    left: 0;
+    margin: initial;
+    margin-left: 40px;
+    top: 100px;
+    pointer-events: all;
   }
+
+   @media (width <=1281px){
+     height: 75dvh;
+  }
+
 `;
 
 export const NavItem = styled.div`
@@ -62,13 +71,17 @@ export const NavItem = styled.div`
     }
   }
 
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     flex-direction: row;
-    width: 200px;
     justify-content: flex-start;
     gap: 1rem;
     padding: 1rem;
     margin: 0.25rem 1rem;
+    cursor: pointer;
+  }
+
+  @media (width <=1281px) {
+    padding: 0.7rem 1rem;
   }
 `;
 
@@ -81,10 +94,17 @@ export const NavIcon = styled.div`
 
 export const NavLabel = styled.span`
   display: none;
+
   @media (width >= 768px) {
+    display: block;
     font-size: 0.75rem;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    color: var(--color-white);
+  }
+
+  @media (width <=1281px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -106,5 +126,19 @@ export const AddButton = styled.div`
     &:hover {
       background: var(--color-secondary-hover);
     }
+  }
+
+  @media (width >= 768px) {
+    position: static;
+    height: max-content;
+    width: max-content;
+    transform: scale(1);
+    padding: 1rem;
+    margin: 0.25rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  @media (width <=1281px) {
+    padding: 0.7rem 1rem;
   }
 `;

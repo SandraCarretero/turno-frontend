@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const PageContainer = styled.div`
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
 `;
@@ -57,21 +57,10 @@ export const MatchHeader = styled.div`
 `;
 
 export const GameInfo = styled.div`
-  display: grid;
-  grid-template-columns: 200px 1fr auto;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-  align-items: start;
-
-  @media (max-width: 968px) {
-    grid-template-columns: 150px 1fr;
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    text-align: center;
-  }
+  align-items: center;
 `;
 
 export const GameImageContainer = styled.div`
@@ -136,6 +125,7 @@ export const GameTitleSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  align-items: center;
 `;
 
 export const GameTitle = styled.h1`
@@ -195,10 +185,10 @@ export const MatchMeta = styled.div`
 `;
 
 export const MetaItem = styled.div`
-  width: 46%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.75rem;
   color: #333;
@@ -222,6 +212,10 @@ export const MetaItem = styled.div`
     padding: 0.25rem;
     border-radius: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (width >= 768px) {
+    width: 45%;
   }
 `;
 
@@ -566,18 +560,23 @@ export const MatchNotes = styled.div`
 `;
 
 export const MatchDetailsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   gap: 1.5rem;
   background: white;
   padding: 1.5rem;
   border-radius: 0.75rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  @media (width >= 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 `;
 
 export const MatchDetailItem = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
 `;
 

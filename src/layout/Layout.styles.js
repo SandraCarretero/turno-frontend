@@ -20,6 +20,7 @@ export const MainContent = styled.main`
 
   @media (min-width: 768px) {
     padding-bottom: 1rem;
-    margin-left: 250px; /* Space for desktop sidebar */
+    margin-left: 150px;
+    margin-top: 100px;
   }
 `

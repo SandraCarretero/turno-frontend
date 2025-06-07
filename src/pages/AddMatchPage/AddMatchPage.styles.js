@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const PageContainer = styled.div`
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
 `;
@@ -252,7 +252,6 @@ export const SelectedGame = styled.div`
   align-items: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 1rem;
   border: 2px solid var(--color-primary);
   margin-bottom: 1rem;

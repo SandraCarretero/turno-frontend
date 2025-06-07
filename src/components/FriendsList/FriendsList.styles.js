@@ -33,6 +33,7 @@ export const Friends = styled.li`
   display: flex;
   align-items: center;
   gap: 20px;
+  cursor: pointer;
 
   &:last-child {
     border-bottom: none;

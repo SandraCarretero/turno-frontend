@@ -47,6 +47,8 @@ const GlobalStyles = createGlobalStyle`
     align-items: center;
     justify-content: center;
     width: 100dvw;
+    max-width: 100dvw;
+    overflow-x: hidden;
   }
 
   #root{

@@ -9,10 +9,10 @@ export const PageContainer = styled.div`
 export const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #f8f9fa;
+  justify-content: center;
 
   @media (max-width: 768px) {
     flex-direction: column;

@@ -95,6 +95,11 @@ export const Stats = styled.div`
   display: flex;
   margin-bottom: 1.5rem;
   justify-content: space-between;
+
+  @media (width >= 768px) {
+    justify-content: flex-start;
+    gap: 50px;
+  }
 `;
 
 export const StatItem = styled.div``;

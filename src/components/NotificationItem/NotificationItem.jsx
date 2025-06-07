@@ -24,10 +24,10 @@ const NotificationItem = ({ notification, onAcceptFriendRequest }) => {
     const notificationDate = new Date(date);
     const diffInMinutes = Math.floor((now - notificationDate) / (1000 * 60));
 
-    if (diffInMinutes < 1) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
-    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+    if (diffInMinutes < 1) return 'Ahora';
+    if (diffInMinutes < 60) return `Hace ${diffInMinutes}m`;
+    if (diffInMinutes < 1440) return `Hace ${Math.floor(diffInMinutes / 60)}h`;
+    return `Hace ${Math.floor(diffInMinutes / 1440)}d`;
   };
 
   const getNotificationIcon = type => {

@@ -28,7 +28,10 @@ const MobileNavigation = () => {
         </NavItem>
 
         <AddButton as={NavLink} to="/add-match">
-          <Plus size={24} />
+          <NavIcon>
+            <Plus size={24} />
+          </NavIcon>
+          <NavLabel>Añadir partida</NavLabel>
         </AddButton>
 
         <NavItem as={NavLink} to="/stats">

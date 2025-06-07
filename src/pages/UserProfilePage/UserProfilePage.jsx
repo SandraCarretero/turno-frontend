@@ -72,7 +72,8 @@ const UserProfilePage = () => {
     },
     onError: error => {
       toast.error(
-        error.response?.data?.message || 'Error al aceptar la solicitud de amistad'
+        error.response?.data?.message ||
+          'Error al aceptar la solicitud de amistad'
       );
     }
   });
@@ -139,8 +140,8 @@ const UserProfilePage = () => {
       <ProfileHeader>
         <UserInfo>
           <UserColumn>
-          <UserAvatar user={profileUser} size="big" />
-          {status === 'accepted' && (
+            <UserAvatar user={profileUser} size="big" />
+            {status === 'accepted' && (
               <FriendStatus status="accepted">
                 <UserCheck size={16} />
                 Friends
@@ -152,28 +153,27 @@ const UserProfilePage = () => {
                 Pendiente
               </FriendStatus>
             )}
-            </UserColumn>
+          </UserColumn>
           <UserDetails>
             <Username>{profileUser.username}</Username>
-            
+
             <UserStats>
               <StatItem>
-                <StatValue>{profileUser.games?.length || 0}</StatValue>
-                <StatLabel>Games</StatLabel>
+                <StatValue>{matches?.length || 0}</StatValue>
+                <StatLabel>Partidas</StatLabel>
               </StatItem>
               <StatItem>
-                <StatValue>{matches?.length || 0}</StatValue>
-                <StatLabel>Matches</StatLabel>
+                <StatValue>{profileUser.games?.length || 0}</StatValue>
+                <StatLabel>Juegos</StatLabel>
               </StatItem>
               <StatItem>
                 <StatValue>
                   {profileUser.friends?.filter(f => f.status === 'accepted')
                     .length || 0}
                 </StatValue>
-                <StatLabel>Friends</StatLabel>
+                <StatLabel>Amigos</StatLabel>
               </StatItem>
             </UserStats>
-            
           </UserDetails>
         </UserInfo>
 
@@ -221,7 +221,9 @@ const UserProfilePage = () => {
         ) : (
           <EmptyMatches>
             <p>
-              {isOwnProfile ? "No tienes partidas" : `${profileUser.username} no tiene partidas`}{' '}
+              {isOwnProfile
+                ? 'No tienes partidas'
+                : `${profileUser.username} no tiene partidas`}{' '}
               guardadas todavía
             </p>
           </EmptyMatches>

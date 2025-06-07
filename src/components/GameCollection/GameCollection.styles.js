@@ -43,6 +43,7 @@ export const GameCard = styled.div`
   transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
   color: inherit;
+  height: max-content;
 
   &:hover {
     transform: translateY(-2px);

@@ -260,7 +260,6 @@ const MatchDetailPage = () => {
                 <MetaItem>
                   <Calendar size={18} />
                   <div>
-                    <strong>Fecha</strong>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {formatDate(match.date)}
                     </div>
@@ -269,7 +268,6 @@ const MatchDetailPage = () => {
                 <MetaItem>
                   <Clock size={18} />
                   <div>
-                    <strong>Duración</strong>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {formatDuration(match.duration)}
                     </div>
@@ -278,7 +276,6 @@ const MatchDetailPage = () => {
                 <MetaItem>
                   <MapPin size={18} />
                   <div>
-                    <strong>Ubicación</strong>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.location}
                     </div>
@@ -287,7 +284,6 @@ const MatchDetailPage = () => {
                 <MetaItem>
                   <Users size={18} />
                   <div>
-                    <strong>Jugadores</strong>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.players.length} participantes
                     </div>
@@ -296,7 +292,6 @@ const MatchDetailPage = () => {
                 <MetaItem $statusColor={getStatusColor(match.status)}>
                   <Star size={18} />
                   <div>
-                    <strong>Estado</strong>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.status === 'completed'
                         ? 'Completada'
@@ -309,7 +304,6 @@ const MatchDetailPage = () => {
                 <MetaItem>
                   <Trophy size={18} />
                   <div>
-                    <strong>Tipo</strong>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.isCooperative
                         ? 'Cooperativo'

@@ -3,7 +3,7 @@ import { ListContainer, LoadingText, EmptyState } from './MatchList.styles';
 
 const MatchList = ({ matches, loading }) => {
   if (loading) {
-    return <LoadingText>Loading matches...</LoadingText>;
+    return <LoadingText>Cargando partidas...</LoadingText>;
   }
 
   if (!matches || matches.length === 0) {

@@ -118,7 +118,7 @@ export const Button = styled.button`
     background: ${props => {
       if (props.variant === 'secondary') return '#545b62';
       if (props.variant === 'danger') return '#af0c1b';
-      return '#0056b3';
+      return 'var(--color-secondary-hover);';
     }};
   }
 
