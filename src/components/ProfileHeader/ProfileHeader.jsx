@@ -20,7 +20,7 @@ import {
 } from './ProfileHeader.styles';
 import UserAvatar from '../UserAvatar/UserAvatar';
 
-const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
+const ProfileHeader = ({ user, onEditProfile, matches, games, friends, onRefresh }) => {
   const fileInputRef = useRef(null);
   const { updateUser, user: authUser, logout } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
@@ -68,6 +68,11 @@ const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
         toast.success(
           response.data.message || 'Avatar actualizado correctamente'
         );
+        
+        // Llamar a onRefresh para actualizar los datos del perfil
+        if (onRefresh) {
+          onRefresh();
+        }
       } else {
         throw new Error(response.data?.message || 'Error desconocido');
       }
@@ -114,13 +119,16 @@ const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
     }
   };
 
-  const displayUser = user?._id === authUser?._id ? authUser : user;
+  // Usar los datos pasados como props en lugar de los datos anidados del usuario
+  const displayGames = games || user?.games || [];
+  const displayFriends = friends || user?.friends || [];
+  const displayMatches = matches || [];
 
   return (
     <HeaderContainer>
       <AvatarSection>
         <AvatarContainer onClick={handleAvatarClick} disabled={isUploading}>
-          <UserAvatar user={displayUser} size="big" />
+          <UserAvatar user={user} size="big" />
 
           <AvatarOverlay $isUploading={isUploading}>
             {isUploading ? (
@@ -140,20 +148,19 @@ const ProfileHeader = ({ user, onEditProfile, matches, onRefresh }) => {
         </AvatarContainer>
 
         <UserInfo>
-          <Username>{displayUser?.username}</Username>
+          <Username>{user?.username}</Username>
           <Stats>
             <StatItem>
-              <StatValue>{matches?.length || 0}</StatValue>
+              <StatValue>{displayMatches.length}</StatValue>
               <StatLabel>Partidas</StatLabel>
             </StatItem>
             <StatItem>
-              <StatValue>{displayUser?.games?.length || 0}</StatValue>
+              <StatValue>{displayGames.length}</StatValue>
               <StatLabel>Juegos</StatLabel>
             </StatItem>
             <StatItem>
               <StatValue>
-                {displayUser?.friends?.filter(f => f.status === 'accepted')
-                  .length || 0}
+                {displayFriends.filter(f => f.status === 'accepted').length}
               </StatValue>
               <StatLabel>Amigos</StatLabel>
             </StatItem>

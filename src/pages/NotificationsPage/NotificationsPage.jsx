@@ -80,7 +80,7 @@ const NotificationsPage = () => {
   if (isLoading) {
     return (
       <PageContainer>
-        <LoadingText>Loading notifications...</LoadingText>
+        <LoadingText>Cargando notificaciones...</LoadingText>
       </PageContainer>
     );
   }

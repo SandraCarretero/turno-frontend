@@ -186,8 +186,8 @@ const UserProfilePage = () => {
               >
                 <UserPlus size={16} />
                 {sendFriendRequestMutation.isLoading
-                  ? 'Sending...'
-                  : 'Add Friend'}
+                  ? 'Enviando...'
+                  : 'Añadir amigo'}
               </ActionButton>
             )}
 
@@ -198,8 +198,8 @@ const UserProfilePage = () => {
               >
                 <UserCheck size={16} />
                 {acceptFriendRequestMutation.isLoading
-                  ? 'Accepting...'
-                  : 'Accept Request'}
+                  ? 'Aceptando...'
+                  : 'Petición aceptada'}
               </ActionButton>
             )}
           </ActionButtons>

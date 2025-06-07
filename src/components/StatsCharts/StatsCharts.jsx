@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useState } from 'react';
 import {
   ChartsContainer,
   ChartCard,
@@ -18,13 +16,21 @@ import {
   ChartStatValue,
   ChartStatLabel,
   FullWidthChart,
-  NoDataMessage,
-} from "./StatsCharts.styles"
-import { BarChart3, LineChart, PieChart, TrendingUp, Trophy, Users, Clock } from "lucide-react"
+  NoDataMessage
+} from './StatsCharts.styles';
+import {
+  BarChart3,
+  LineChart,
+  PieChart,
+  TrendingUp,
+  Trophy,
+  Users,
+  Clock
+} from 'lucide-react';
 
-const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
-  const [timeRange, setTimeRange] = useState("month")
-  const [chartView, setChartView] = useState("bar")
+const StatsCharts = ({ stats = {}, chartType = 'overview' }) => {
+  const [timeRange, setTimeRange] = useState('month');
+  const [chartView, setChartView] = useState('bar');
 
   const {
     monthlyMatches = [],
@@ -34,8 +40,8 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
     totalMatches = 0,
     totalWins = 0,
     averageGameDuration = 0,
-    mostPlayedGame = null,
-  } = stats
+    mostPlayedGame = null
+  } = stats;
 
   const renderOverviewCharts = () => (
     <>
@@ -47,10 +53,16 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
             Partidas por Mes
           </ChartTitle>
           <ChartActions>
-            <ChartButton $active={chartView === "bar"} onClick={() => setChartView("bar")}>
+            <ChartButton
+              $active={chartView === 'bar'}
+              onClick={() => setChartView('bar')}
+            >
               Barras
             </ChartButton>
-            <ChartButton $active={chartView === "line"} onClick={() => setChartView("line")}>
+            <ChartButton
+              $active={chartView === 'line'}
+              onClick={() => setChartView('line')}
+            >
               Línea
             </ChartButton>
           </ChartActions>
@@ -63,7 +75,9 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
               <small>Aquí iría el gráfico real con los datos</small>
             </MockChart>
           ) : (
-            <NoDataMessage>No hay suficientes datos para mostrar el gráfico mensual</NoDataMessage>
+            <NoDataMessage>
+              No hay suficientes datos para mostrar el gráfico mensual
+            </NoDataMessage>
           )}
         </ChartContent>
         <ChartStats>
@@ -72,13 +86,18 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
             <ChartStatLabel>Meses</ChartStatLabel>
           </ChartStat>
           <ChartStat>
-            <ChartStatValue>{Math.max(...monthlyMatches.map((m) => m.count || 0), 0)}</ChartStatValue>
+            <ChartStatValue>
+              {Math.max(...monthlyMatches.map(m => m.count || 0), 0)}
+            </ChartStatValue>
             <ChartStatLabel>Máximo</ChartStatLabel>
           </ChartStat>
           <ChartStat>
             <ChartStatValue>
               {monthlyMatches.length > 0
-                ? Math.round(monthlyMatches.reduce((acc, m) => acc + (m.count || 0), 0) / monthlyMatches.length)
+                ? Math.round(
+                    monthlyMatches.reduce((acc, m) => acc + (m.count || 0), 0) /
+                      monthlyMatches.length
+                  )
                 : 0}
             </ChartStatValue>
             <ChartStatLabel>Promedio</ChartStatLabel>
@@ -94,13 +113,22 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
             Tasa de Victoria
           </ChartTitle>
           <ChartActions>
-            <ChartButton $active={timeRange === "week"} onClick={() => setTimeRange("week")}>
+            <ChartButton
+              $active={timeRange === 'week'}
+              onClick={() => setTimeRange('week')}
+            >
               Semana
             </ChartButton>
-            <ChartButton $active={timeRange === "month"} onClick={() => setTimeRange("month")}>
+            <ChartButton
+              $active={timeRange === 'month'}
+              onClick={() => setTimeRange('month')}
+            >
               Mes
             </ChartButton>
-            <ChartButton $active={timeRange === "year"} onClick={() => setTimeRange("year")}>
+            <ChartButton
+              $active={timeRange === 'year'}
+              onClick={() => setTimeRange('year')}
+            >
               Año
             </ChartButton>
           </ChartActions>
@@ -113,7 +141,9 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
               <small>Gráfico de línea temporal</small>
             </MockChart>
           ) : (
-            <NoDataMessage>No hay suficientes datos para mostrar la evolución</NoDataMessage>
+            <NoDataMessage>
+              No hay suficientes datos para mostrar la evolución
+            </NoDataMessage>
           )}
         </ChartContent>
         <ChartLegend>
@@ -147,7 +177,9 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
               <small>Gráfico circular con los juegos más populares</small>
             </MockChart>
           ) : (
-            <NoDataMessage>No hay suficientes datos de juegos para mostrar</NoDataMessage>
+            <NoDataMessage>
+              No hay suficientes datos de juegos para mostrar
+            </NoDataMessage>
           )}
         </ChartContent>
         <ChartStats>
@@ -156,7 +188,7 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
             <ChartStatLabel>Juegos</ChartStatLabel>
           </ChartStat>
           <ChartStat>
-            <ChartStatValue>{mostPlayedGame?.name || "N/A"}</ChartStatValue>
+            <ChartStatValue>{mostPlayedGame?.name || 'N/A'}</ChartStatValue>
             <ChartStatLabel>Favorito</ChartStatLabel>
           </ChartStat>
           <ChartStat>
@@ -170,7 +202,7 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
         </ChartStats>
       </FullWidthChart>
     </>
-  )
+  );
 
   const renderGameCharts = () => (
     <FullWidthChart $accentColor="#fd7e14">
@@ -188,7 +220,7 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
         </MockChart>
       </ChartContent>
     </FullWidthChart>
-  )
+  );
 
   const renderPlayerCharts = () => (
     <FullWidthChart $accentColor="#e83e8c">
@@ -206,7 +238,7 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
         </MockChart>
       </ChartContent>
     </FullWidthChart>
-  )
+  );
 
   const renderTimeCharts = () => (
     <FullWidthChart $accentColor="#20c997">
@@ -224,16 +256,16 @@ const StatsCharts = ({ stats = {}, chartType = "overview" }) => {
         </MockChart>
       </ChartContent>
     </FullWidthChart>
-  )
+  );
 
   return (
     <ChartsContainer>
-      {chartType === "overview" && renderOverviewCharts()}
-      {chartType === "games" && renderGameCharts()}
-      {chartType === "players" && renderPlayerCharts()}
-      {chartType === "time" && renderTimeCharts()}
+      {chartType === 'overview' && renderOverviewCharts()}
+      {chartType === 'games' && renderGameCharts()}
+      {chartType === 'players' && renderPlayerCharts()}
+      {chartType === 'time' && renderTimeCharts()}
     </ChartsContainer>
-  )
-}
+  );
+};
 
-export default StatsCharts
+export default StatsCharts;
