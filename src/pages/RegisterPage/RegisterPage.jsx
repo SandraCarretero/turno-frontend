@@ -1,4 +1,6 @@
-import { useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
@@ -6,21 +8,39 @@ import toast from 'react-hot-toast';
 import {
   PageContainer,
   FormContainer,
+  LogoContainer,
+  Logo,
   Title,
+  Subtitle,
   Form,
   InputGroup,
   Label,
+  InputWrapper,
   Input,
+  InputIcon,
+  PasswordStrength,
+  PasswordStrengthText,
   Button,
+  TermsText,
   LinkText,
-  ErrorMessage
+  ErrorMessage,
+  LogoImg
 } from './RegisterPage.styles';
+import {
+  Mail,
+  Lock,
+  User,
+  AlertCircle,
+  Dice1Icon as Dice,
+  ShieldCheck
+} from 'lucide-react';
 
 const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
   const [serverErrors, setServerErrors] = useState({});
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
   const {
     register,
@@ -29,14 +49,47 @@ const RegisterPage = () => {
     formState: { errors }
   } = useForm();
 
-  const password = watch('password');
+  const password = watch('password', '');
+
+  // Calcular la fuerza de la contraseña
+  useEffect(() => {
+    if (!password) {
+      setPasswordStrength(0);
+      return;
+    }
+
+    let strength = 0;
+
+    // Longitud
+    if (password.length >= 8) strength += 25;
+    else if (password.length >= 6) strength += 10;
+
+    // Letras mayúsculas y minúsculas
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
+    else if (/[a-z]/.test(password) || /[A-Z]/.test(password)) strength += 10;
+
+    // Números
+    if (/[0-9]/.test(password)) strength += 25;
+
+    // Caracteres especiales
+    if (/[^a-zA-Z0-9]/.test(password)) strength += 25;
+
+    setPasswordStrength(strength);
+  }, [password]);
+
+  const getPasswordStrengthText = () => {
+    if (passwordStrength === 0) return '';
+    if (passwordStrength < 30) return 'Débil';
+    if (passwordStrength < 70) return 'Media';
+    return 'Fuerte';
+  };
 
   const onSubmit = async data => {
     setLoading(true);
     setServerErrors({});
     try {
       await registerUser(data);
-      toast.success('Cuenta creada correctamente! Por favor revisa el correo');
+      toast.success('¡Cuenta creada correctamente! Por favor revisa tu correo');
       navigate('/');
     } catch (error) {
       console.log('Error response:', error.response?.data);
@@ -71,91 +124,143 @@ const RegisterPage = () => {
   return (
     <PageContainer>
       <FormContainer>
-        <Title>Join Boardify</Title>
+        <LogoContainer>
+          <Logo>
+            Turn
+            <LogoImg src="https://res.cloudinary.com/djxnoeo6v/image/upload/v1749129757/favicon_fgdjdv.svg" />
+          </Logo>
+        </LogoContainer>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>
-            <Label>Username</Label>
-            <Input
-              type="text"
-              {...register('username', {
-                required: 'Nombre de usuario es obligatorio',
-                minLength: {
-                  value: 3,
-                  message: 'El nombre de usuario debe tener al menos 3 letras'
-                },
-                maxLength: {
-                  value: 20,
-                  message: 'El nombre de usuario debe tener menos de 20 letras'
-                },
-                pattern: {
-                  value: /^[a-zA-Z0-9_]+$/,
-                  message:
-                    'El nombre de usuario solo puede tener letras, números y símbolos'
-                }
-              })}
-              placeholder="Introduce un nombre de usuario"
-            />
+            <Label htmlFor="username">
+              <User size={16} /> Nombre de usuario
+            </Label>
+            <InputWrapper>
+              <InputIcon>
+                <User size={18} />
+              </InputIcon>
+              <Input
+                id="username"
+                type="text"
+                {...register('username', {
+                  required: 'Nombre de usuario es obligatorio',
+                  minLength: {
+                    value: 3,
+                    message: 'El nombre de usuario debe tener al menos 3 letras'
+                  },
+                  maxLength: {
+                    value: 20,
+                    message:
+                      'El nombre de usuario debe tener menos de 20 letras'
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9_]+$/,
+                    message:
+                      'El nombre de usuario solo puede tener letras, números y guiones bajos'
+                  }
+                })}
+                placeholder="Elige un nombre de usuario"
+              />
+            </InputWrapper>
             {(errors.username || serverErrors.username) && (
               <ErrorMessage>
+                <AlertCircle size={16} />
                 {errors.username?.message || serverErrors.username}
               </ErrorMessage>
             )}
           </InputGroup>
 
           <InputGroup>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              {...register('email', {
-                required: 'El email es obligatorio',
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: 'Email inválido'
-                }
-              })}
-              placeholder="Introduce tu email"
-            />
+            <Label htmlFor="email">
+              <Mail size={16} /> Email
+            </Label>
+            <InputWrapper>
+              <InputIcon>
+                <Mail size={18} />
+              </InputIcon>
+              <Input
+                id="email"
+                type="email"
+                {...register('email', {
+                  required: 'El email es obligatorio',
+                  pattern: {
+                    value: /^\S+@\S+$/i,
+                    message: 'Email inválido'
+                  }
+                })}
+                placeholder="tu@email.com"
+              />
+            </InputWrapper>
             {(errors.email || serverErrors.email) && (
               <ErrorMessage>
+                <AlertCircle size={16} />
                 {errors.email?.message || serverErrors.email}
               </ErrorMessage>
             )}
           </InputGroup>
 
           <InputGroup>
-            <Label>Contraseña</Label>
-            <Input
-              type="password"
-              {...register('password', {
-                required: 'La contraseña es obligatoria',
-                minLength: {
-                  value: 6,
-                  message: 'La contraseña debe tener al menos 6 caracteres'
-                }
-              })}
-              placeholder="Introduce una contraseña"
-            />
+            <Label htmlFor="password">
+              <Lock size={16} /> Contraseña
+            </Label>
+            <InputWrapper>
+              <InputIcon>
+                <Lock size={18} />
+              </InputIcon>
+              <Input
+                id="password"
+                type="password"
+                {...register('password', {
+                  required: 'La contraseña es obligatoria',
+                  minLength: {
+                    value: 6,
+                    message: 'La contraseña debe tener al menos 6 caracteres'
+                  }
+                })}
+                placeholder="Crea una contraseña segura"
+              />
+            </InputWrapper>
+            {password && (
+              <>
+                <PasswordStrength $strength={passwordStrength} />
+                <PasswordStrengthText $strength={passwordStrength}>
+                  {getPasswordStrengthText()}
+                </PasswordStrengthText>
+              </>
+            )}
             {(errors.password || serverErrors.password) && (
               <ErrorMessage>
+                <AlertCircle size={16} />
                 {errors.password?.message || serverErrors.password}
               </ErrorMessage>
             )}
           </InputGroup>
 
           <InputGroup>
-            <Label>Confirma contraseña</Label>
-            <Input
-              type="password"
-              {...register('confirmPassword', {
-                required: 'Por favor confirma tu contraseña',
-                validate: value =>
-                  value === password || 'Las contraseñas no coinciden'
-              })}
-              placeholder="Confirm your password"
-            />
+            <Label htmlFor="confirmPassword">
+              <ShieldCheck size={16} /> Confirma contraseña
+            </Label>
+            <InputWrapper>
+              <InputIcon>
+                <ShieldCheck size={18} />
+              </InputIcon>
+              <Input
+                id="confirmPassword"
+                type="password"
+                {...register('confirmPassword', {
+                  required: 'Por favor confirma tu contraseña',
+                  validate: value =>
+                    value === password || 'Las contraseñas no coinciden'
+                })}
+                placeholder="Repite tu contraseña"
+              />
+            </InputWrapper>
             {errors.confirmPassword && (
-              <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
+              <ErrorMessage>
+                <AlertCircle size={16} />
+                {errors.confirmPassword.message}
+              </ErrorMessage>
             )}
           </InputGroup>
 

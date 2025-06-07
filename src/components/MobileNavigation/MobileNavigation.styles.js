@@ -42,10 +42,9 @@ export const NavigationContainer = styled.nav`
     pointer-events: all;
   }
 
-   @media (width <=1281px){
-     height: 75dvh;
+  @media (width >= 768px) and (width <= 1280px) {
+    height: 75dvh;
   }
-
 `;
 
 export const NavItem = styled.div`
@@ -80,7 +79,7 @@ export const NavItem = styled.div`
     cursor: pointer;
   }
 
-  @media (width <=1281px) {
+  @media (width >= 768px) and (width <= 1280px) {
     padding: 0.7rem 1rem;
   }
 `;
@@ -103,7 +102,7 @@ export const NavLabel = styled.span`
     color: var(--color-white);
   }
 
-  @media (width <=1281px) {
+  @media (width >= 768px) and (width <= 1280px) {
     font-size: 0.8rem;
   }
 `;
@@ -138,7 +137,7 @@ export const AddButton = styled.div`
     border-radius: 0.5rem;
   }
 
-  @media (width <=1281px) {
+  @media (width >= 768px) and (width <= 1280px) {
     padding: 0.7rem 1rem;
   }
 `;
