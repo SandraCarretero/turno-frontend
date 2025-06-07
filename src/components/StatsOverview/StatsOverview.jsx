@@ -233,7 +233,7 @@ const StatsOverview = ({ stats = {} }) => {
         </CardContent>
       </OverviewCard>
 
-      {/* MEJORADO: Compañero Top */}
+      {/* Compañero Top */}
       <OverviewCard $accentColor="#1AB3A6">
         <CardHeader>
           <CardTitle $iconColor="#1AB3A6">
