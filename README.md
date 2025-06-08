@@ -1,6 +1,6 @@
-# 🎲 TURNO - Frontend
+# TURNO - Frontend
 
-![Turno landing](https://github.com/SandraCarretero/TaskPlannerPro/blob/main/front/img/readme/flowtask_landing.png)
+![Turno landing](https://github.com/SandraCarretero/turno-frontend/blob/main/turno-landing.png)
 
 ## Descripción 📑
 
