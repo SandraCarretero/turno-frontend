@@ -23,6 +23,7 @@ El frontend está desarrollado en **React** con una arquitectura basada en compo
 - Registro, login y gestión de cuenta
 - Avatares personalizados
 - Lista de amigos
+- Sincronización de invitados con usuarios reales 
 
 📩 **Notificaciones**
 - Solicitudes de amistad enviadas y recibidas
