@@ -31,8 +31,8 @@ const StatsPage = () => {
     return (
       <PageContainer>
         <LoadingContainer>
-          <Loader />
           <LoadingText>Cargando tus estadísticas de juego...</LoadingText>
+          <Loader />
         </LoadingContainer>
       </PageContainer>
     );

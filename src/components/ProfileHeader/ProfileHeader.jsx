@@ -171,11 +171,11 @@ const ProfileHeader = ({ user, onEditProfile, matches, games, friends, onRefresh
       <Actions>
         <ActionButton onClick={onEditProfile}>
           <UserRoundPen size={20} />
-          Edit Profile
+          Editar perfil
         </ActionButton>
         <ActionButton $variant="danger" onClick={() => logout()}>
           <LogOut size={20} />
-          Log Out
+          Salir
         </ActionButton>
       </Actions>
     </HeaderContainer>
