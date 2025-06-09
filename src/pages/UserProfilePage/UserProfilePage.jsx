@@ -144,7 +144,7 @@ const UserProfilePage = () => {
             {status === 'accepted' && (
               <FriendStatus status="accepted">
                 <UserCheck size={16} />
-                Friends
+                Amigos
               </FriendStatus>
             )}
             {status === 'pending' && (
