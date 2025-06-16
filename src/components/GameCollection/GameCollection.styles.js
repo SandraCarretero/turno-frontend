@@ -29,6 +29,7 @@ export const GamesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
+  align-items: stretch;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -36,6 +37,8 @@ export const GamesGrid = styled.div`
 `;
 
 export const GameCard = styled.div`
+  display: flex;
+  flex-direction: column;
   background: white;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -43,7 +46,7 @@ export const GameCard = styled.div`
   transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
   color: inherit;
-  height: max-content;
+  height: 100%;
 
   &:hover {
     transform: translateY(-2px);
@@ -62,7 +65,7 @@ export const GameInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 40%;
+  flex: 1;
 `;
 
 export const GameTitle = styled.h3`

@@ -262,30 +262,14 @@ const StatsOverview = ({ stats = {} }) => {
             <>
               <MainStat>
                 <MainValue style={{ fontSize: '1.5rem' }}>
-                  {totalMatches === 0
-                    ? 'Sin partidas aún'
-                    : totalMatches < 2
-                    ? 'Necesitas más partidas'
-                    : 'Sin compañeros frecuentes'}
+                  Sin partidas
                 </MainValue>
-                <MainUnit>
-                  {totalMatches === 0
-                    ? 'juega tu primera partida'
-                    : totalMatches < 2
-                    ? 'juega más partidas multijugador'
-                    : 'juega más con los mismos compañeros'}
-                </MainUnit>
               </MainStat>
 
               <SubStats>
                 <SubStat>
                   <SubStatLabel>
-                    🎮{' '}
-                    {totalMatches === 0
-                      ? 'Registra partidas para ver estadísticas de compañeros'
-                      : totalMatches < 2
-                      ? 'Necesitas al menos 2 partidas multijugador'
-                      : 'Juega más partidas con las mismas personas para ver estadísticas detalladas'}
+                    Registra al menos una partida
                   </SubStatLabel>
                 </SubStat>
 

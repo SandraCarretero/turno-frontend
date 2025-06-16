@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
+import { Users, Clock } from "lucide-react"
 import {
   GameGrid,
   GameCard,
   GameImage,
   GameInfo,
   GameTitle,
-  GameRank,
-  LoadingText
+  LoadingText,
+  GameMeta,
+  MetaItem
 } from './BestsellerGames.styles';
 
 const BestsellerGames = ({ games = [], loading }) => {
@@ -23,13 +25,22 @@ const BestsellerGames = ({ games = [], loading }) => {
       <GameGrid>
         {games.map(game => (
           <GameCard key={game.bggId} as={Link} to={`/game/${game.bggId}`}>
-            
             <GameImage
               src={game.thumbnail.$?.value || game.thumbnail}
               alt={game.name}
             />
             <GameInfo>
               <GameTitle>{game.name}</GameTitle>
+              <GameMeta>
+                <MetaItem>
+                  <Users size={12} />
+                  {game.minPlayers}-{game.maxPlayers}
+                </MetaItem>
+                <MetaItem>
+                  <Clock size={12} />
+                  {game.playingTime}min
+                </MetaItem>
+              </GameMeta>
             </GameInfo>
           </GameCard>
         ))}

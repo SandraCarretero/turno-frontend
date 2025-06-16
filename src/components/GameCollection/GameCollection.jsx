@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom"
-import { Plus, Users, Clock } from "lucide-react"
+import { Users, Clock } from "lucide-react"
 import {
   CollectionContainer,
-  AddGameButton,
   GamesGrid,
   GameCard,
   GameImage,

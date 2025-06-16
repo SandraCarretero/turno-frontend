@@ -9,6 +9,8 @@ export const GameGrid = styled.div`
 `;
 
 export const GameCard = styled.div`
+  display: flex;
+  flex-direction: column;
   background: white;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -41,19 +43,23 @@ export const GameRank = styled.div`
 
 export const GameImage = styled.img`
   width: 100%;
-  height: 150px;
+  height: 120px;
   object-fit: cover;
 `;
 
 export const GameInfo = styled.div`
-  padding: 1rem;
+  padding: 0.7rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
 `;
 
 export const GameTitle = styled.h3`
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -61,9 +67,40 @@ export const GameTitle = styled.h3`
   overflow: hidden;
 `;
 
-export const LoadingText = styled.div`
-  text-align: center;
-  color: #6c757d;
-  font-style: italic;
-  padding: 2rem;
+export const GameMeta = styled.div`
+  display: flex;
+  gap: 1rem;
 `;
+
+export const MetaItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+`;
+
+export const EmptyState = styled.div`
+  text-align: center;
+  padding: 3rem 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: #6c757d;
+    margin: 0 0 1.5rem 0;
+  }
+  `;
+  
+  export const LoadingText = styled.div`
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 2rem;
+  `;

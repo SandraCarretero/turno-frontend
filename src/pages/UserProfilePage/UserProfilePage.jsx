@@ -34,6 +34,7 @@ import {
   FriendStatus
 } from './UserProfilePage.styles';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
+import Loader from '../../components/Loader/Loader';
 
 const UserProfilePage = () => {
   const { userId } = useParams();
@@ -82,6 +83,7 @@ const UserProfilePage = () => {
     return (
       <PageContainer>
         <LoadingText>Cargando perfil...</LoadingText>
+        <Loader />
       </PageContainer>
     );
   }

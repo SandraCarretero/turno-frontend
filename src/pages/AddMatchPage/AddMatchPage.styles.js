@@ -148,7 +148,7 @@ export const GameSearchContainer = styled.div`
 export const GameSearchInput = styled.input`
   width: 100%;
   padding: 1.25rem 1.5rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--color-primary);
   border-radius: 1rem;
   font-size: 1.1rem;
   transition: all 0.2s ease;
@@ -265,8 +265,10 @@ export const PlayersSection = styled.div`
 
 export const PlayersList = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
 `;
 
 export const PlayerItem = styled.div`
@@ -281,11 +283,8 @@ export const PlayerItem = styled.div`
   flex-direction: column;
   align-items: stretch;
   gap: 1rem;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
+  width: 100%;
+  height: 100%;
 `;
 
 export const PlayerInfo = styled.div`

@@ -128,7 +128,7 @@ const EditProfileModal = ({ onClose }) => {
 
             <ModalFooter>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Guardando...' : 'Guardar'}
+                {loading ? '...' : 'Guardar'}
               </Button>
               <Button type="button" variant="secondary" onClick={onClose}>
                 Cancelar

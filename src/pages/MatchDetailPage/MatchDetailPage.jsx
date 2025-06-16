@@ -258,7 +258,7 @@ const MatchDetailPage = () => {
             <MatchMetaGrid>
               <MatchMeta>
                 <MetaItem>
-                  <Calendar size={18} />
+                  <Calendar size={20} />
                   <div>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {formatDate(match.date)}
@@ -266,7 +266,7 @@ const MatchDetailPage = () => {
                   </div>
                 </MetaItem>
                 <MetaItem>
-                  <Clock size={18} />
+                  <Clock size={20} />
                   <div>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {formatDuration(match.duration)}
@@ -274,7 +274,7 @@ const MatchDetailPage = () => {
                   </div>
                 </MetaItem>
                 <MetaItem>
-                  <MapPin size={18} />
+                  <MapPin size={20} />
                   <div>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.location}
@@ -282,7 +282,7 @@ const MatchDetailPage = () => {
                   </div>
                 </MetaItem>
                 <MetaItem>
-                  <Users size={18} />
+                  <Users size={20} />
                   <div>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.players.length} participantes
@@ -290,7 +290,7 @@ const MatchDetailPage = () => {
                   </div>
                 </MetaItem>
                 <MetaItem $statusColor={getStatusColor(match.status)}>
-                  <Star size={18} />
+                  <Star size={20} />
                   <div>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.status === 'completed'
@@ -302,7 +302,7 @@ const MatchDetailPage = () => {
                   </div>
                 </MetaItem>
                 <MetaItem>
-                  <Trophy size={18} />
+                  <Trophy size={20} />
                   <div>
                     <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
                       {match.isCooperative
