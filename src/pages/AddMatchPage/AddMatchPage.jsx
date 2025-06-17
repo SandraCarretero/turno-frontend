@@ -1,5 +1,8 @@
-'use client';
-
+import { Controller } from 'react-hook-form';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,7 +20,9 @@ import {
   InputGroup,
   Label,
   Input,
+  SelectWrapper,
   Select,
+  Arrow,
   TextArea,
   GameSearchContainer,
   GameSearchInput,
@@ -558,6 +563,14 @@ const AddMatchPage = ({ editMode = false }) => {
     );
   }
 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#470E5C'
+      }
+    }
+  });
+
   return (
     <PageContainer>
       <Title>{editMode ? 'Editar partida' : 'Crear nueva partida'}</Title>
@@ -643,14 +656,52 @@ const AddMatchPage = ({ editMode = false }) => {
             Detalles
           </SectionTitle>
 
-          <InputGroup>
+          {/* <InputGroup>
             <Label>Fecha</Label>
             <Input
               type="date"
               {...register('date', { required: 'La fecha es obligatoria' })}
             />
             {errors.date && <ErrorMessage>{errors.date.message}</ErrorMessage>}
-          </InputGroup>
+          </InputGroup> */}
+
+          <ThemeProvider theme={theme}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <InputGroup>
+                <Label>Fecha</Label>
+
+                <Controller
+                  name="date"
+                  control={control}
+                  rules={{ required: 'La fecha es obligatoria' }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format="dd/MM/yyyy"
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.date,
+                          helperText: errors.date?.message || '',
+                          sx: {
+                            backgroundColor: '#fafafa',
+                            borderRadius: '12px',
+                            border: '2px solid #e9ecef',
+                            '& .MuiPickersInputBase-root': {
+                              borderRadius: '12px'
+                            },
+                            '& .MuiPickersOutlinedInput-notchedOutline': {
+                              border: 'none'
+                            }
+                          }
+                        }
+                      }}
+                    />
+                  )}
+                />
+              </InputGroup>
+            </LocalizationProvider>
+          </ThemeProvider>
 
           <InputGroup>
             <Label>Duración (minutos)</Label>
@@ -684,11 +735,14 @@ const AddMatchPage = ({ editMode = false }) => {
 
           <InputGroup>
             <Label>Status</Label>
-            <Select {...register('status')}>
-              <option value="completed">Completado</option>
-              <option value="in-progress">En progreso</option>
-              <option value="scheduled">Programado</option>
-            </Select>
+            <SelectWrapper>
+              <Select {...register('status')}>
+                <option value="completed">Completado</option>
+                <option value="in-progress">En progreso</option>
+                <option value="scheduled">Programado</option>
+              </Select>
+              <Arrow />
+            </SelectWrapper>
           </InputGroup>
 
           <CheckboxGroup>

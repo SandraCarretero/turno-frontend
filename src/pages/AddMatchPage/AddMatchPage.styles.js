@@ -99,15 +99,24 @@ export const Input = styled.input`
   }
 `;
 
+export const SelectWrapper = styled.div`
+  position: relative;
+  width: ${props => props.$width || '100%'};
+`;
+
 export const Select = styled.select`
   padding: 0.875rem 1rem;
   border: 2px solid #e9ecef;
   border-radius: 0.75rem;
   font-size: 1rem;
   transition: all 0.2s ease;
-  background: #fafafa;
+  background-color: #fafafa;
   cursor: pointer;
   width: ${props => props.$width || '100%'};
+  padding-right: 2.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 
   &:focus {
     outline: none;
@@ -115,6 +124,19 @@ export const Select = styled.select`
     background: white;
     box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
   }
+`;
+
+export const Arrow = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  pointer-events: none;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #6e6e6e;
 `;
 
 export const TextArea = styled.textarea`
