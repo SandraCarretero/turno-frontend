@@ -111,6 +111,7 @@ export const Select = styled.select`
   font-size: 1rem;
   transition: all 0.2s ease;
   background-color: #fafafa;
+  color: var(--color-black);
   cursor: pointer;
   width: ${props => props.$width || '100%'};
   padding-right: 2.5rem;
