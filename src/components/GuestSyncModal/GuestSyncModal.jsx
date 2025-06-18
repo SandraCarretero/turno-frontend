@@ -113,7 +113,6 @@ const GuestSyncModal = ({
       }
 
       setSyncSuccess(true);
-      toast.success(`¡${guest.name} sincronizado con ${user.username}!`);
 
       // Notify parent component that sync is complete with the user data and guest ID
       if (onSyncComplete) {
