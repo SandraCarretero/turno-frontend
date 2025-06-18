@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notificationAPI, userAPI } from '../../services/api';
 import NotificationItem from '../../components/NotificationItem/NotificationItem';
 import toast from 'react-hot-toast';
+import Loader from '../../components/Loader/Loader';
 import {
   PageContainer,
   Header,
@@ -81,6 +82,7 @@ const NotificationsPage = () => {
     return (
       <PageContainer>
         <LoadingText>Cargando notificaciones...</LoadingText>
+        <Loader />
       </PageContainer>
     );
   }
