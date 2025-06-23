@@ -4,11 +4,11 @@
 
 ## Descripción 📑
 
-**Turno** es una aplicación web para registrar partidas de juegos de mesa con tus amigos, consultar tus estadísticas, gestionar tus juegos, amistades y notificaciones, y mucho más.
+¡Te presento TURNO! Una app para registrar partidas de juegos de mesa con amigos y gestionar tu ludoteca.
 
-El frontend está desarrollado en **React** con una arquitectura basada en componentes, usando Redux para el estado global y React Router para la navegación. El diseño es **responsive y mobile-first**, con estilos implementados mediante **styled-components**.
+![Captura de pantalla de TURNO](https://github.com/SandraCarretero/turno-frontend/blob/main/turno-landing.png)
 
-🔗 **[Ver demo online](https://turno-frontend.vercel.app)**
+Puedes ver la demo aquí: [Demo TURNO](https://turno-frontend.vercel.app/)
 
 ---
 
