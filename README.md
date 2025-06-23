@@ -9,6 +9,7 @@
 El frontend está desarrollado en **React** con una arquitectura basada en componentes, usando Redux para el estado global y React Router para la navegación. El diseño es **responsive y mobile-first**, con estilos implementados mediante **styled-components**.
 
 🔗 **[Ver demo online](https://turno-frontend.vercel.app)**
+
 ---
 
 ## ✨ Funcionalidades
